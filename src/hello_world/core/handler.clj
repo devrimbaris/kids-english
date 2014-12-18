@@ -31,9 +31,9 @@
   (let [all (take options-count  (shuffle cards))
          card (rand-nth all)]
     [card all]))
+
+
 ;;__ html page generators
-
-
 (defn print-question-page [cards]
   (let [[card all] (get-card-and-options (get-samplecards) 5)]
     (html [:html
@@ -45,25 +45,13 @@
                [:p  [:input
                      {:type "radio" :name "cevap" :value (str  (:card-id x) "-" (:card-id card))}
                      (:word x)]])
-             [:input {:type "submit" :name "submit" :value "submit"}]
-             
-             ]
-            
-            ]
-           
-
-           ])))
+             [:input {:type "submit" :name "submit" :value "submit"}]]]])))
 
 (defn check-answer [ answer]
   (let [[x1 x2]  (stri/split answer #"-")]
     (if  (= x1 x2) "AFERIN" "YURRU")))
 
-
-
-
 ;;__ routings
-
-
 (defroutes app-routes
   (GET "/" [] (print-question-page (get-samplecards)))
   (GET "/check-answer" [cevap] (check-answer cevap))
