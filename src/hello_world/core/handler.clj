@@ -16,7 +16,6 @@
                           {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
                           {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}
                           ])
-(def options-count 5)
 
 ;;__ utility functions
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
@@ -26,16 +25,19 @@
           []
           cards ))
 
+
+(defn get-card-and-options [cards options-count]
+  (let [all (take options-count  (shuffle cards))
+         card (rand-nth all)]
+    [card all]))
 ;;__ html page generators
 
 (defn print-question-page [cards]
-  (let [all (take options-count  (shuffle cards))
-        card (rand-nth all)
-        ]
+  (let [[card all] (get-card-and-options (get-samplecards) 5)]
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
            [:body
-            [:img {:src (:img-file card)}]
+            [:img {:src (:img-file card)  :alt (:img-file card)}]
             [:p (str (find-all-values-in-map-with-key :word all))]
             
             ]
@@ -43,7 +45,7 @@
 
            ])))
 
-(print-question-page (get-samplecards))
+(for [card (get-samplecards)] (:img-file card))
 
 ;;__ routings
 (defroutes app-routes
@@ -56,6 +58,11 @@
 
 
 ;;__ testing functions
+
+
+
+(print-question-page (get-samplecards))
+
 (find-all-values-in-map-with-key :img-file (get-samplecards))
 
 (find-cards-with-id 2 ( get-samplecards))
