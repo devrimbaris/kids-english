@@ -2,6 +2,7 @@
 (ns hello-world.core.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
+            [clojure.string :as stri]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [hiccup.core :refer [html]]))
 
@@ -32,19 +33,20 @@
     [card all]))
 ;;__ html page generators
 
+
 (defn print-question-page [cards]
   (let [[card all] (get-card-and-options (get-samplecards) 5)]
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
            [:body
-            [:form
-             [:img {:src (:img-file card)  :alt (:img-file card)}]
-             [:ul
-              (for [x all]
-                [:p  [:input
-                      {:type "radio" :name "cevap" :value (:card-id x)}
-                      (:word x)]])
-              ]
+            [:img {:src (:img-file card)  :alt (:img-file card)}]
+            [:form {:action "/check-answer" :method "get"}
+             (for [x all]
+               [:p  [:input
+                     {:type "radio" :name "cevap" :value (str  (:card-id x) "-" (:card-id card))}
+                     (:word x)]])
+             [:input {:type "submit" :name "submit" :value "submit"}]
+             
              ]
             
             ]
@@ -52,17 +54,24 @@
 
            ])))
 
-;;; <input type="checkbox" name="vehicle" value="Bike">I have a bike<br> 
+(defn check-answer [ answer]
+  (let [[x1 x2]  (stri/split answer #"-")]
+    (if  (= x1 x2) "AFERIN" "YURRU")))
 
-(for [card (get-samplecards)] (:img-file card))
+
+
 
 ;;__ routings
+
+
 (defroutes app-routes
   (GET "/" [] (print-question-page (get-samplecards)))
+  (GET "/check-answer" [cevap] (check-answer cevap))
   (route/not-found "Not Found"))
 
 (def app
   (wrap-defaults app-routes site-defaults))
+
 
 
 
@@ -89,7 +98,6 @@
 (reduce #(lazy-cat %1 %2) [] (split-at 3 [1 2 3 4 5 6 7 8 9]))
 
 (rand-nth (get-samplecards))
-
 
 
 
