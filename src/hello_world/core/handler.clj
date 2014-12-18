@@ -1,3 +1,4 @@
+;;lein ring server-headless
 (ns hello-world.core.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
