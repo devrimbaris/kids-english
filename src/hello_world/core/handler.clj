@@ -5,14 +5,14 @@
             [hiccup.core :refer [html]]))
 
 
-(def samplecards [{:card-id 1 :word "head" :img-file "head.jpg"}
-                  {:card-id 2 :word "shoulders" :img-file "shoulders.jpg"}
-                  {:card-id 3 :word "knees" :img-file "knees.jpg"}
-                  {:card-id 4 :word "toes" :img-file "toes.jpg"}])
+(defn get-samplecards [] [{:card-id 1 :category "body" :word "head" :img-file "head.jpg"}
+                          {:card-id 2 :category "body" :word "shoulders" :img-file "shoulders.jpg"}
+                          {:card-id 3 :category "body" :word "knees" :img-file "knees.jpg"}
+                          {:card-id 4 :category "body" :word "toes" :img-file "toes.jpg"}])
 
 
 (defroutes app-routes
-  (GET "/" [] (str  "Hello " (:name sampledata)))
+  (GET "/" [] (print-question-page (get-samplecards)))
   (route/not-found "Not Found"))
 
 (def app
@@ -20,13 +20,16 @@
 
 
 
+;;html page generators
+
+(defn print-question-page [cards]
+  (html [:table [:tr [:td "card-id"] [:td "1"]]] ))
 
 
-(defn print-all-cards [cards]
-  (html [:table [:tr [:td "deneme"]]] ))
 
 
-;;finder functions
+
+;;utility functions
 (defn find-cards [id cards] (filter #(= id (:card-id %)) cards))
 
 (defn find-all-values-in-map-with-key [keyname cards]
@@ -35,7 +38,8 @@
           cards ))
 
 (defn get-random-card [cards]
-  (let [i (rand-int 0 (count cards))]))
+  (let [i (rand-int (count cards))]
+    (nth cards i)))
 
 
 
@@ -43,7 +47,7 @@
 ;;testing functions
 (find-all-values-in-map-with-key :img-file samplecards)
 
-(find-card 2 samplecards)
+(find-card 2 ( get-samplecards))
 
 
 
