@@ -16,7 +16,7 @@
                           {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
                           {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}
                           ])
-(def options-count 4)
+(def options-count 5)
 
 ;;__ utility functions
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
@@ -26,25 +26,11 @@
           []
           cards ))
 
-(defn get-random-card [cards]
-  (let [i (rand-int (count cards))]
-    (nth cards i)))
-
-
 ;;__ html page generators
 
-(defn prepare-option-cards [card cards opt-count]
-  (let [rest-of-cards (take opt-count  (remove #(= (:card-id card) (:card-id %)) cards))
-        rnd-insert-position (rand-int (inc  opt-count))
-        splitted (split-at rnd-insert-position rest-of-cards)
-        inserted (vector (first splitted) (vector card) (second splitted))]
-    (reduce #(lazy-cat %1 %2) [] inserted))
-  )
-
-
 (defn print-question-page [cards]
-  (let [card (get-random-card cards)
-        all (prepare-option-cards card cards options-count)
+  (let [all (take options-count  (shuffle cards))
+        card (rand-nth all)
         ]
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
@@ -56,11 +42,6 @@
            
 
            ])))
-
-
-
-
-
 
 (print-question-page (get-samplecards))
 
@@ -91,7 +72,7 @@
 
 (reduce #(lazy-cat %1 %2) [] (split-at 3 [1 2 3 4 5 6 7 8 9]))
 
-
+(rand-nth (get-samplecards))
 
 
 
