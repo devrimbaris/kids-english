@@ -37,13 +37,22 @@
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
            [:body
-            [:img {:src (:img-file card)  :alt (:img-file card)}]
-            [:p (str (find-all-values-in-map-with-key :word all))]
+            [:form
+             [:img {:src (:img-file card)  :alt (:img-file card)}]
+             [:ul
+              (for [x all]
+                [:p  [:input
+                      {:type "radio" :name "cevap" :value (:card-id x)}
+                      (:word x)]])
+              ]
+             ]
             
             ]
            
 
            ])))
+
+;;; <input type="checkbox" name="vehicle" value="Bike">I have a bike<br> 
 
 (for [card (get-samplecards)] (:img-file card))
 
