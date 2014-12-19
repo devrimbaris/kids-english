@@ -5,6 +5,8 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [clojure.string :as stri]
+            [ring.util.response :as resp]
+            [ring.middleware.session :as session]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [hiccup.core :refer [html]]))
 
@@ -17,8 +19,7 @@
                           {:card-id 6 :category "colours" :word "green" :img-file "green.jpg"}
                           {:card-id 7 :category "colours" :word "blue" :img-file "blue.jpg"}
                           {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
-                          {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}
-                          ])
+                          {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}])
 
 ;;__ utility functions
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
@@ -26,76 +27,89 @@
 (defn find-all-values-in-map-with-key [keyname cards]
   (reduce #(conj %1 (get %2 keyname))
           []
-          cards ))
-
-(defn get-card-and-options [cards options-count exclude-list]
-  (let [all (take options-count  (shuffle cards))
-         card (rand-nth all)]
-    [card all]))
-
+          cards))
 
 (defn remove-cards-with-id [id-list cards] 
   (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list))
 
+(defn get-card-and-options [cards options-count exclude-list]
+  (let [remaining-cards (->> cards
+                             (remove-cards-with-id exclude-list)
+                             (shuffle)
+                             (take options-count)) 
+        card (rand-nth remaining-cards)]
+    [card remaining-cards]))
 
-(remove (fn [x] (= (:card-id x) 1)) (get-samplecards))
+(get-card-and-options (get-samplecards) 3 [])
 
 ;;__ html page generators
-(defn print-question-page [cards]
+(defn print-question-form [cards exclude-list]
   (let [[card all] (get-card-and-options cards 5 [])]
-    (html [:html
-           [:head [:title (str  "Question" " " (:word card))]]
-           [:body
-            [:p 
-             [:img {:src (:img-file card)  :alt (:img-file card)}]]
-            [:a {:href "/"} "Reload"]
-            [:form {:action "/check-answer" :method "get"}
-             (for [x all]
-               [:p  [:input 
-                     {:type "radio" :name "cevap" :value (:card-id x)}
-                     (:word x)]])
-             [:input {:type "hidden" :name "correct-answer" :value (:card-id card)}]
-             [:input {:type "hidden"
-                      :name "alloptions"
-                      :value (stri/join "-" (find-all-values-in-map-with-key :card-id all))}]
-             [:input {:type "submit" :name "submit" :value "submit"}]]]])))
+    (html [:p 
+           [:img {:src (:img-file card)  :alt (:word card)}] (:word card)]
+          [:form {:action "/check-answer" :method "get"}
+           (for [x all]
+             [:p  [:input 
+                   {:type "radio" :name "answer" :value (:card-id x)}
+                   (:word x)]])
+           [:input {:type "hidden" :name "correct-answer" :value (:card-id card)}]
+           [:input {:type "hidden" :name "currentcards" :value (stri/join "-" (find-all-values-in-map-with-key :card-id cards))}]
+           [:input {:type "hidden" :name "alloptions" :value (stri/join "-" (find-all-values-in-map-with-key :card-id all))}]
+           [:input {:type "submit" :name "submit" :value "submit"}]])))
+
+(defn print-question-page [cards]
+  (html [:html
+       [:head [:title "Word maze"]]
+       [:body
+        [:p 
+         [:a {:href "/"} "Reload"]]
+        (print-question-form cards [])]]))
 
 ;;__ program logic
-(defn answer-correct? [answer]
-  (let [[x1 x2]  (stri/split answer #"-")]
-    (= x1 x2)))
+
 
 ;;__ routings
+
+(defn set-session-var [session]
+  (if (:my-var session)
+    {:body "Session variable already set"}
+    {:body "Nothing in session, setting the var" 
+     :session (assoc session :my-var "foo")}))
+
+
 (defroutes app-routes
+
   (GET "/" [] (print-question-page (get-samplecards)))
-  (GET "/check-answer" [cevap alloptions] (answer-correct? cevap))
+  (GET "/check-answer" [answer correct-answer currentcards alloptions]
+       (if (= correct-answer answer)
+         (print-question-form (remove-cards-with-id [correct-answer] [] )) 
+         "YYYYY") )
+  (route/resources "/")
   (route/not-found "Not Found"))
+
 
 (def app
   (wrap-defaults app-routes site-defaults))
 
-
 ;;__ testing functions
 
+;; (print-question-page (get-samplecards))
 
+;; (find-all-values-in-map-with-key :img-file (get-samplecards))
 
-(print-question-page (get-samplecards))
+;; (find-cards-with-id 2 ( get-samplecards))
 
-(find-all-values-in-map-with-key :img-file (get-samplecards))
+;; (print-question-page (get-samplecards))
 
-(find-cards-with-id 2 ( get-samplecards))
+;; (lazy-cat (split-at 3 [1 2 3 4 5 6 7 8 9]))
 
-(print-question-page (get-samplecards))
+;; (split-at 8 [1 2 3 4 5 6 7 8 9])
 
-(lazy-cat (split-at 3 [1 2 3 4 5 6 7 8 9]))
+;; (reduce #(lazy-cat %1 %2) [] (split-at 3 [1 2 3 4 5 6 7 8 9]))
 
-(split-at 8 [1 2 3 4 5 6 7 8 9])
+;; (rand-nth (get-samplecards))
 
-(reduce #(lazy-cat %1 %2) [] (split-at 3 [1 2 3 4 5 6 7 8 9]))
-
-(rand-nth (get-samplecards))
-
-(stri/split "1-2-3" #"-")
+;; (stri/split "1-2-3" #"-")
 
 
 
