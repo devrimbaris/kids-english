@@ -1,3 +1,5 @@
+;;dogru cevapsa yeni soru
+;;yanlis cevapsa alloptions kullanarak tekrar ayni cardlardla soruyu sorma
 ;;lein ring server-headless
 (ns hello-world.core.handler
   (:require [compojure.core :refer :all]
@@ -27,7 +29,7 @@
           cards ))
 
 
-(defn get-card-and-options [cards options-count]
+(defn get-card-and-options [cards options-count exclude-list]
   (let [all (take options-count  (shuffle cards))
          card (rand-nth all)]
     [card all]))
@@ -35,32 +37,36 @@
 
 ;;__ html page generators
 (defn print-question-page [cards]
-  (let [[card all] (get-card-and-options (get-samplecards) 5)]
+  (let [[card all] (get-card-and-options cards 5 [])]
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
            [:body
             [:img {:src (:img-file card)  :alt (:img-file card)}]
+            [:a {:href "/"} "Reload"]
             [:form {:action "/check-answer" :method "get"}
              (for [x all]
-               [:p  [:input
-                     {:type "radio" :name "cevap" :value (str  (:card-id x) "-" (:card-id card))}
+               [:p  [:input 
+                     {:type "radio" :name "cevap" :value (:card-id x)}
                      (:word x)]])
+             [:input {:type "hidden" :name "correct-answer" :value (:card-id card)}]
+             [:input {:type "hidden"
+                      :name "alloptions"
+                      :value (stri/join "-" (find-all-values-in-map-with-key :card-id all))}]
              [:input {:type "submit" :name "submit" :value "submit"}]]]])))
 
-(defn check-answer [ answer]
+;;__ program logic
+(defn answer-correct? [answer]
   (let [[x1 x2]  (stri/split answer #"-")]
-    (if  (= x1 x2) "AFERIN" "YURRU")))
+    (= x1 x2)))
 
 ;;__ routings
 (defroutes app-routes
   (GET "/" [] (print-question-page (get-samplecards)))
-  (GET "/check-answer" [cevap] (check-answer cevap))
+  (GET "/check-answer" [cevap alloptions] (answer-correct? cevap))
   (route/not-found "Not Found"))
 
 (def app
   (wrap-defaults app-routes site-defaults))
-
-
 
 
 ;;__ testing functions
@@ -72,10 +78,6 @@
 (find-all-values-in-map-with-key :img-file (get-samplecards))
 
 (find-cards-with-id 2 ( get-samplecards))
-
-(let [rc (get-random-card (get-samplecards))]
-  (remove #(= (:card-id rc) (:card-id %)) (get-samplecards))
-  )
 
 (print-question-page (get-samplecards))
 
