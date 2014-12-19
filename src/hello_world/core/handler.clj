@@ -28,12 +28,17 @@
           []
           cards ))
 
-
 (defn get-card-and-options [cards options-count exclude-list]
   (let [all (take options-count  (shuffle cards))
          card (rand-nth all)]
     [card all]))
 
+
+(defn remove-cards-with-id [id-list cards] 
+  (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list))
+
+
+(remove (fn [x] (= (:card-id x) 1)) (get-samplecards))
 
 ;;__ html page generators
 (defn print-question-page [cards]
@@ -41,7 +46,8 @@
     (html [:html
            [:head [:title (str  "Question" " " (:word card))]]
            [:body
-            [:img {:src (:img-file card)  :alt (:img-file card)}]
+            [:p 
+             [:img {:src (:img-file card)  :alt (:img-file card)}]]
             [:a {:href "/"} "Reload"]
             [:form {:action "/check-answer" :method "get"}
              (for [x all]
@@ -89,6 +95,7 @@
 
 (rand-nth (get-samplecards))
 
+(stri/split "1-2-3" #"-")
 
 
 
