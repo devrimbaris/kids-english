@@ -2,7 +2,7 @@
   (:require [clojure.string :as stri]))
 
 ;;__ definitions
-(defn get-samplecards [] [{:card-id 1 :category "body" :word "head" :img-file "head.jpg"}
+(defn get-cards [] [{:card-id 1 :category "body" :word "head" :img-file "head.jpg"}
                           {:card-id 2 :category "body" :word "shoulders" :img-file "shoulders.jpg"}
                           {:card-id 3 :category "body" :word "knees" :img-file "knees.jpg"}
                           {:card-id 4 :category "body" :word "toes" :img-file "toes.jpg"}
@@ -31,4 +31,7 @@
         card (rand-nth remaining-cards)]
     [card remaining-cards]))
 
-(get-card-and-options (get-samplecards) 3 [])
+
+
+
+
