@@ -55,10 +55,27 @@
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)
          (print-question-form (utils/remove-cards-with-id [correct-answer] [] ))
-         "YYYYY") )
+         "YYYYY"))
   (route/resources "/")
   (route/not-found "Not Found"))
 
+(defn deneme-middleware [hndlr]
+  (fn [request]
+    (let [response (hndlr request)]
+      (assoc response :ahaha "iste bu")))
+
+  
+  )
 
 (def app
-  (wrap-defaults app-routes site-defaults))
+  (wrap-defaults app-routes site-defaults deneme-middleware))
+
+
+
+
+
+
+
+
+
+
