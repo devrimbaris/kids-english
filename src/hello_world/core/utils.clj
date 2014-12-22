@@ -1,14 +1,5 @@
-;;dogru cevapsa yeni soru
-;;yanlis cevapsa alloptions kullanarak tekrar ayni cardlardla soruyu sorma
-;;lein ring server-headless
 (ns hello-world.core.utils
-  (:require [compojure.core :refer :all]
-            [compojure.route :as route]
-            [clojure.string :as stri]
-            [ring.util.response :as resp]
-            [ring.middleware.session :as session]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [hiccup.core :refer [html]]))
+  (:require [clojure.string :as stri]))
 
 ;;__ definitions
 (defn get-samplecards [] [{:card-id 1 :category "body" :word "head" :img-file "head.jpg"}
