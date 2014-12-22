@@ -54,21 +54,27 @@
   (GET "/" [] (print-question-page (utils/get-cards)))
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)
-         (print-question-form (utils/remove-cards-with-id [correct-answer] [] ))
+         (print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
          "YYYYY"))
+  (GET "/dba" []  "Asdasda")
   (route/resources "/")
   (route/not-found "Not Found"))
 
 (defn deneme-middleware [hndlr]
   (fn [request]
     (let [response (hndlr request)]
-      (assoc response :ahaha "iste bu")))
+      (assoc response :body "iste bu")))
 
   
   )
 
 (def app
-  (wrap-defaults app-routes site-defaults deneme-middleware))
+  (wrap-defaults app-routes  site-defaults ))
+
+(app-routes {:server-port 80
+                      :uri "/dba"
+                      :scheme :http
+                      :request-method :get})
 
 
 
