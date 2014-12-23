@@ -63,10 +63,7 @@
 (defn deneme-middleware [hndlr]
   (fn [request]
     (let [response (hndlr request)]
-      (assoc response :body "iste bu")))
-
-  
-  )
+      (assoc response :body "iste bu"))))
 
 (def app
   (wrap-defaults app-routes  site-defaults ))
