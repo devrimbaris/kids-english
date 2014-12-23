@@ -7,7 +7,7 @@
             [hello-world.core.utils :as utils]
             [clojure.string :as stri]
             [ring.util.response :as resp]
-            [ring.middleware.session :as session]
+            [ring.middleware.session :as sess]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [hiccup.core :refer [html]]))
 
@@ -27,21 +27,15 @@
            [:input {:type "hidden" :name "alloptions" :value (stri/join "-" (utils/find-all-values-in-map-with-key :card-id all))}]
            [:input {:type "submit" :name "submit" :value "submit"}]])))
 
-
-
 (defn print-question-page [cards]
   (html [:html
-       [:head [:title "Word maze"]]
-       [:body
-        [:p
-         [:a {:href "/"} "Reload"]]
-        (print-question-form cards [])]]))
+         [:head [:title "Word maze"]]
+         [:body
+          [:p
+           [:a {:href "/"} "Reload"]]
+          (print-question-form cards [])]]))
 
 ;;__ program logic
-
-
-;;__ routings
-
 (defn set-session-var [session]
   (if (:my-var session)
     {:body "Session variable already set"}
@@ -49,14 +43,14 @@
      :session (assoc session :my-var "foo")}))
 
 
-(defroutes app-routes
+;;__ routings
 
-  (GET "/" [] (print-question-page (utils/get-cards)))
+(defroutes app-routes
+  (GET "/" []  (print-question-page (utils/get-cards)))
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)
          (print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
          "YYYYY"))
-  (GET "/dba" []  "Asdasda")
   (route/resources "/")
   (route/not-found "Not Found"))
 
@@ -65,20 +59,22 @@
     (let [response (hndlr request)]
       (assoc response :body "iste bu"))))
 
-(def app
-  (wrap-defaults app-routes  site-defaults ))
 
-(app-routes {:server-port 80
-                      :uri "/dba"
-                      :scheme :http
-                      :request-method :get})
+
+(def  app
+  (wrap-defaults (sess/wrap-session app-routes)  site-defaults ))
 
 
 
+;; (defn handler [{session :session}]
+;;   (let [count   (:count session 0)
+;;         session (assoc session :count (inc count))]
+;;     (-> (resp/response (str "You accessed this page " count " times."))
+;;         (assoc :session session))))
 
 
+;; (defn handler [{session :session}]
+;;   (resp/response (str "Hello " (:username session))))
 
-
-
-
-
+;; (def app
+;;   (sess/wrap-session handler))
