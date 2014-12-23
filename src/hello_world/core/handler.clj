@@ -46,13 +46,15 @@
 ;;__ routings
 
 (defroutes app-routes
-  (GET "/" []  (print-question-page (utils/get-cards)))
+  (GET "/" {session :session}
+       {:body (print-question-page (utils/get-cards))
+        :session (if-not (:cards-list session) (assoc session :cards-list (utils/get-cards)))
+        :headers {"Content-Type" "text/html"}})
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)
          (print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
          "YYYYY"))
-  (GET "/input" {session :session} {:body "denemeee" :session (assoc session :name "dedede")})
-  (GET "/output" {session :session} {:body (:name session)})
+  (GET "/output" {session :session} {:body (str (:cards-list session)) :headers {"Content-Type" "text/html"}})
   (route/resources "/")
   (route/not-found "Not Found"))
 
@@ -60,7 +62,6 @@
   (fn [request]
     (let [response (hndlr request)]
       (assoc response :body "iste bu"))))
-
 
 (def app (wrap-defaults app-routes site-defaults))
 
