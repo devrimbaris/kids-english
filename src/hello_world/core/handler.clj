@@ -8,7 +8,7 @@
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session :as sess]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
             [hiccup.core :refer [html]]))
 
 
@@ -51,6 +51,8 @@
        (if (= correct-answer answer)
          (print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
          "YYYYY"))
+  (GET "/input" {session :session} {:body "denemeee" :session (assoc session :name "dedede")})
+  (GET "/output" {session :session} {:body (:name session)})
   (route/resources "/")
   (route/not-found "Not Found"))
 
@@ -60,9 +62,9 @@
       (assoc response :body "iste bu"))))
 
 
+(def app (wrap-defaults app-routes site-defaults))
 
-(def  app
-  (wrap-defaults (sess/wrap-session app-routes)  site-defaults ))
+;; (def  app (wrap-defaults (sess/wrap-session app-routes)  site-defaults))
 
 
 
