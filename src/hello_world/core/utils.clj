@@ -37,4 +37,3 @@
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 
-(get-card-and-options nil 3 [])

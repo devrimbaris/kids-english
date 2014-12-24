@@ -21,17 +21,18 @@
 (defroutes app-routes
   (GET "/" {session :session}
        {:body (views/print-start)
-        :session (assoc session :cards-list (utils/get-cards) :exclude-list [] :correct-answer nil)})
+        :session (assoc session :cards-list (utils/get-cards) :exclude-list [] :correct-answer {})})
 
   (GET "/print-question" {{:keys [cards-list exclude-list :as se]}  :session}
        (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
          {:body  (views/print-question selected-card options)
           :session (assoc se :correct-answer selected-card)}))
 
-  (GET "/check-answer" {{:keys [correct-answer]} :session params :query-params}
-       { :body  ( str correct-answer)} ) 
+  (GET "/check-answer" {session :session :as request}
+       {:body  (str ":sayu" ( str  request))})
 
-  (GET "/output" {session :session} {:body (str (:cards-list session)) })
+  (GET "/deneme"  {session :session}
+       {:body  (str ":sayu" ( str  session))})
 
   (route/resources "/")
 
@@ -43,15 +44,15 @@
       (assoc response :headers (assoc (:headers response)  "Content-Type" content-type)))))
 
 ;;__ application
-(def app (-> app-routes
+(def app (-> #'app-routes
              (enforce-content-type-middleware "text/html")
              (wrap-defaults site-defaults)))
 
 
+(def m {:a 1 :b 2 :c 3})
 
+(m :c)
 
-
-(utils/get-card-and-options (utils/get-cards) 3  [] )
 
 ;; ;;__ middleware functions
 ;; (defn deneme-middleware [hndlr]

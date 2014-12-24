@@ -16,7 +16,7 @@
 (defn print-question-form [selected-card options]
   (html [:p
          [:img {:src (:img-file selected-card)  :alt (:word selected-card)}] (:word selected-card)]
-        [:form {:action "/check-answer" :method "get"}
+        [:form {:action "/check-answer" :method "GET"}
          (for [x options]
            [:p  [:input
                  {:type "radio" :name "answer" :value (:card-id x)}
