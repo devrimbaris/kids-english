@@ -20,11 +20,12 @@
 (defroutes app-routes
   (GET "/" {session :session}
        {:body (views/print-start)
-        :session (assoc session :cards-list (utils/get-cards) :exclude-list [])})
+        :session (assoc session :cards-list (utils/get-cards) :exclude-list [] :correct-answer nil)})
 
-  (GET "/print-question" {{:keys [cards-list exclude-list]}  :session}
-       {:body (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
-                (views/print-question selected-card options))})
+  (GET "/print-question" {{:keys [cards-list exclude-list :as session]}  :session}
+       (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
+         {:body  (views/print-question selected-card options)
+          :session (assoc session :correct-answer selected-card)}))
 
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)

@@ -40,7 +40,7 @@
 
 
 
-
+(remove-cards-with-id [1 2 3 ]  nil)
 
 
 
