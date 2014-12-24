@@ -21,15 +21,24 @@
 (defroutes app-routes
   (GET "/" {session :session}
        {:body (views/print-start)
-        :session (assoc session :cards-list (utils/get-cards) :exclude-list [] :correct-answer {})})
+        :session (assoc session :cards-list (utils/get-cards) :correct-answer {})})
 
-  (GET "/print-question" {{:keys [cards-list exclude-list :as se]}  :session}
-       (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
+  (GET "/print-question" {{:keys [cards-list again?]}  :session :as request}
+       (let [[selected-card options] (utils/get-card-and-options cards-list 3 )]
          {:body  (views/print-question selected-card options)
-          :session (assoc se :correct-answer selected-card)}))
+          :session (assoc (get-in request [:session]) :correct-answer selected-card)}))
 
-  (GET "/check-answer" {session :session :as request}
-       {:body  (str ":sayu" ( str  request))})
+  (GET "/check-answer" {{:keys [correct-answer cards-list exclude-list]}  :session
+                        {:strs [answer]} :query-params
+                        :as request}
+       (let [ca (str (:card-id correct-answer))
+             ans (str answer)
+             answer-correct? (= ca ans)]
+         (if answer-correct?
+           {:body  "DOGRU"
+            :session (assoc (get-in request [:session])
+                       :cards-list (utils/remove-cards-with-id (:card-id correct-answer)))}
+           {:body "YANLIS"})))
 
   (GET "/deneme"  {session :session}
        {:body  (str ":sayu" ( str  session))})
@@ -37,6 +46,8 @@
   (route/resources "/")
 
   (route/not-found "Not Found"))
+
+
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]
@@ -48,10 +59,6 @@
              (enforce-content-type-middleware "text/html")
              (wrap-defaults site-defaults)))
 
-
-(def m {:a 1 :b 2 :c 3})
-
-(m :c)
 
 
 ;; ;;__ middleware functions

@@ -14,10 +14,9 @@
 (defn remove-cards-with-id [id-list cards]
   (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list))
 
-(defn get-card-and-options [cards options-count exclude-list]
+(defn get-card-and-options [cards options-count]
   (if (nil? cards) []
       (let [options (->> cards
-                         (remove-cards-with-id exclude-list)
                          (shuffle)
                          (take options-count))
             selected-card (rand-nth options)]
