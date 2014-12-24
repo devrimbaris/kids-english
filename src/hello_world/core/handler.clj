@@ -5,6 +5,7 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [hello-world.core.utils :as utils]
+            [hello-world.core.views :as views]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session :as sess]
@@ -12,58 +13,54 @@
             [hiccup.core :refer [html]]))
 
 
-;;__ html page generators
-(defn print-question-form [cards exclude-list]
-  (let [[card all] (utils/get-card-and-options cards 5 [])]
-    (html [:p
-           [:img {:src (:img-file card)  :alt (:word card)}] (:word card)]
-          [:form {:action "/check-answer" :method "get"}
-           (for [x all]
-             [:p  [:input
-                   {:type "radio" :name "answer" :value (:card-id x)}
-                   (:word x)]])
-           [:input {:type "hidden" :name "correct-answer" :value (:card-id card)}]
-           [:input {:type "hidden" :name "currentcards" :value (stri/join "-" (utils/find-all-values-in-map-with-key :card-id cards))}]
-           [:input {:type "hidden" :name "alloptions" :value (stri/join "-" (utils/find-all-values-in-map-with-key :card-id all))}]
-           [:input {:type "submit" :name "submit" :value "submit"}]])))
-
-(defn print-question-page [cards]
-  (html [:html
-         [:head [:title "Word maze"]]
-         [:body
-          [:p
-           [:a {:href "/"} "Reload"]]
-          (print-question-form cards [])]]))
-
 ;;__ program logic
-(defn set-session-var [session]
-  (if (:my-var session)
-    {:body "Session variable already set"}
-    {:body "Nothing in session, setting the var"
-     :session (assoc session :my-var "foo")}))
 
 
 ;;__ routings
-
 (defroutes app-routes
   (GET "/" {session :session}
-       {:body (print-question-page (utils/get-cards))
-        :session (if-not (:cards-list session) (assoc session :cards-list (utils/get-cards)))
-        :headers {"Content-Type" "text/html"}})
+       {:body (views/print-start)
+        :session (assoc session :cards-list (utils/get-cards) :exclude-list [])})
+
+  (GET "/print-question" {{:keys [cards-list exclude-list]}  :session}
+       {:body (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
+                (views/print-question selected-card options))})
+
   (GET "/check-answer" [answer correct-answer currentcards alloptions]
        (if (= correct-answer answer)
-         (print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
+         (views/print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
          "YYYYY"))
-  (GET "/output" {session :session} {:body (str (:cards-list session)) :headers {"Content-Type" "text/html"}})
+
+  (GET "/output" {session :session} {:body (str (:cards-list session)) })
+
   (route/resources "/")
+
   (route/not-found "Not Found"))
 
-(defn deneme-middleware [hndlr]
+(defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]
     (let [response (hndlr request)]
-      (assoc response :body "iste bu"))))
+      (assoc response :headers (assoc (:headers response)  "Content-Type" content-type)))))
 
-(def app (wrap-defaults app-routes site-defaults))
+;;__ application
+(def app (-> app-routes
+             (enforce-content-type-middleware "text/html")
+             (wrap-defaults site-defaults)))
+
+
+
+
+
+(utils/get-card-and-options (utils/get-cards) 3  [] )
+
+;; ;;__ middleware functions
+;; (defn deneme-middleware [hndlr]
+;;   (fn [request]
+;;     (let [response (hndlr request)]
+;;       (assoc response :body "iste bu"))))
+
+
+;; (def app (wrap-defaults (d-middleware app-routes) site-defaults))
 
 ;; (def  app (wrap-defaults (sess/wrap-session app-routes)  site-defaults))
 
@@ -81,3 +78,4 @@
 
 ;; (def app
 ;;   (sess/wrap-session handler))
+
