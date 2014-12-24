@@ -15,6 +15,7 @@
 
 ;;__ program logic
 
+       ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
 ;;__ routings
 (defroutes app-routes
@@ -22,15 +23,13 @@
        {:body (views/print-start)
         :session (assoc session :cards-list (utils/get-cards) :exclude-list [] :correct-answer nil)})
 
-  (GET "/print-question" {{:keys [cards-list exclude-list :as session]}  :session}
+  (GET "/print-question" {{:keys [cards-list exclude-list :as se]}  :session}
        (let [[selected-card options] (utils/get-card-and-options cards-list 3 exclude-list)]
          {:body  (views/print-question selected-card options)
-          :session (assoc session :correct-answer selected-card)}))
+          :session (assoc se :correct-answer selected-card)}))
 
-  (GET "/check-answer" [answer correct-answer currentcards alloptions]
-       (if (= correct-answer answer)
-         (views/print-question-form (utils/remove-cards-with-id [correct-answer] [] ) currentcards)
-         "YYYYY"))
+  (GET "/check-answer" {{:keys [correct-answer]} :session params :query-params}
+       { :body  ( str correct-answer)} ) 
 
   (GET "/output" {session :session} {:body (str (:cards-list session)) })
 
