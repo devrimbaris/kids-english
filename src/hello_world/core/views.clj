@@ -9,12 +9,12 @@
             [ring.util.response :as resp]
             [ring.middleware.session :as sess]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
-            [hiccup.core :refer [html]]))
+            [hiccup.page :refer [html5]]))
 
 
 ;;__ html page generators
 (defn print-question-form [selected-card options]
-  (html [:p
+  (html5 [:p
          [:img {:src (:img-file selected-card)  :alt (:word selected-card)}] (:word selected-card)]
         [:form {:action "/check-answer" :method "GET"}
          (for [x options]
@@ -25,7 +25,7 @@
 
 
 (defn print-question [selected-card  options]
-  (html [:html
+  (html5 [:html
          [:head [:title "Word maze"]]
          [:body
           [:p
@@ -34,7 +34,7 @@
 
 
 (defn print-start []
-  (html [:html
+  (html5 [:html
          [:head [:title "Word maze start"]]
          [:body
           [:p

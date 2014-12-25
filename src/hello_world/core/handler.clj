@@ -15,7 +15,7 @@
 
 ;;__ program logic
 
-       ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
+;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
 ;;__ routings
 (defroutes app-routes
@@ -37,7 +37,7 @@
          (if answer-correct?
            {:body  "DOGRU"
             :session (assoc (get-in request [:session])
-                       :cards-list (utils/remove-cards-with-id (:card-id correct-answer)))}
+                       :cards-list (utils/remove-cards-with-id (list (:card-id correct-answer)) cards-list  ))}
            {:body "YANLIS"})))
 
   (GET "/deneme"  {session :session}
@@ -46,8 +46,6 @@
   (route/resources "/")
 
   (route/not-found "Not Found"))
-
-
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]
@@ -58,8 +56,6 @@
 (def app (-> #'app-routes
              (enforce-content-type-middleware "text/html")
              (wrap-defaults site-defaults)))
-
-
 
 ;; ;;__ middleware functions
 ;; (defn deneme-middleware [hndlr]
