@@ -8,7 +8,8 @@
             [hello-world.core.views :as views]
             [clojure.string :as stri]
             [ring.util.response :as resp]
-            [ring.middleware.session :as sess]
+            [ring.middleware.session.memory :refer [memory-store]]
+            [noir.session :as nses]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
             [hiccup.core :refer [html]]))
 
@@ -40,8 +41,11 @@
                        :cards-list (utils/remove-cards-with-id (list (:card-id correct-answer)) cards-list  ))}
            {:body "YANLIS"})))
 
-  (GET "/deneme"  {session :session}
-       {:body  (str ":sayu" ( str  session))})
+  (GET "/deneme" request
+       (nses/put! :ahanda "ver elidededeni"))
+
+  (GET "/geleme" request
+       (nses/get :ahanda "bulamadim anam"))
 
   (route/resources "/")
 
@@ -53,9 +57,12 @@
       (assoc response :headers (assoc (:headers response)  "Content-Type" content-type)))))
 
 ;;__ application
+;;th ordering is important
 (def app (-> #'app-routes
              (enforce-content-type-middleware "text/html")
-             (wrap-defaults site-defaults)))
+             (wrap-defaults site-defaults)
+             (nses/wrap-noir-session {:store (memory-store nses/mem)})
+             ))
 
 ;; ;;__ middleware functions
 ;; (defn deneme-middleware [hndlr]
