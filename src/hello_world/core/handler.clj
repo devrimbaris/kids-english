@@ -15,29 +15,27 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
             [hiccup.core :refer [html]]))
 
-
 ;;__ program logic
 
 ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
-
 
 ;;__ routings
 (defroutes app-routes
   (GET "/" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
          (nses/clear!)
+         (nses/put! :feedback "HAYDİ BAŞLAYALIM") 
          (nses/put! :cards-list all-cards)
          (str
-          (views/print-remaining-cards all-cards)
           (views/print-start))))
 
   (GET "/print-question" []
        (let [cards-list (nses/get :cards-list)
-             [selected-card options] (utils/get-card-and-options cards-list 3 )]
+             [selected-card options] (utils/get-card-and-options cards-list 5 )]
          (nses/put! :correct-answer selected-card)
          (nses/put! :options options)
          (str
-          (views/print-remaining-cards cards-list)
+          (html [:p  (nses/get :feedback)]) 
           (views/print-question selected-card options))))
 
   (GET "/check-answer" [answer]
@@ -45,15 +43,16 @@
          (if (= ans (:card-id correct-answer))
            (do 
              (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
+             (nses/put! :feedback "B R A V O")
              (if (> (count (nses/get :cards-list)) 0) (resp/redirect "/print-question") (resp/redirect "/") ))
-           (resp/redirect "/print-question"))))
+           (do
+             (nses/put! :feedback "TEKRAR DENE" )
+             (resp/redirect "/print-question")))))
 
   (route/resources "/")
 
   (route/not-found "Not Found"))
 
-
-(> 1 5)
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]

@@ -12,18 +12,6 @@
             [hiccup.page :refer [html5]]
             [hiccup.core :refer [html]]))
 
-
-;;__ html page generators
-(defn print-question-form [selected-card options]
-  (html5    [:img {:src (:img-file selected-card) }] 
-            [:form {:action "/check-answer" :method "GET"}
-             (for [x options]
-               [:p  [:input
-                     {:type "radio" :name "answer" :value (:card-id x)}
-                     (:word x)]])
-             [:input {:type "submit" :name "submit" :value "submit"}]]))
-
-
 (defn embed-audio [{au-file :au-file}]
   (str "<audio controls play autoplay>"
        (html [ :source
@@ -31,18 +19,25 @@
                :type "audio/mpeg"}])
        "</audio>"))
 
+;;__ html page generators
+(defn print-question-form [selected-card options]
+  (html5    [:img {:src (:img-file selected-card) }]
+            [:p (embed-audio selected-card)]
+            [:form {:action "/check-answer" :method "GET"}
+             (for [x options]
+               [:p  [:input
+                     {:type "radio" :name "answer" :value (:card-id x)}
+                     (:word x)]])
+             [:input {:type "submit" :name "submit" :value "submit"}]]))
+
 (defn print-question [selected-card  options]
   (html5 [:html
           [:head [:title "Word maze"]]
           [:body
-          (embed-audio selected-card)
+          
            (print-question-form selected-card options)
            [:p
             [:a {:href "/"} "Restart"]]]]))
-
-
-
-
 
 (defn print-remaining-cards [rem-cards]
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
