@@ -26,6 +26,7 @@
                         (remove-cards-with-id (:card-id selected-card))
                         (nthrest x)
                         (conj selected-card)
+                        (shuffle)
                         )
             ]
         [selected-card options])))

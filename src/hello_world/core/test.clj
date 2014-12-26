@@ -3,7 +3,8 @@
 ;;lein ring server-headless
 (ns hello-world.core.handler
   (:require [hello-world.core.utils :as utils]
-            [clojure.string :as stri]))
+            [clojure.string :as stri]
+            [clojure.walk :as w]))
 
 
 ;; (print-question-page (get-samplecards))
@@ -21,10 +22,5 @@
 ;; (reduce #(lazy-cat %1 %2) [] (split-at 3 [1 2 3 4 5 6 7 8 9]))
 
 
-
-
-
-
-
-
+(defte)
 

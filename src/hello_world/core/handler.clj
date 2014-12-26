@@ -9,6 +9,8 @@
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]
+            [ring.middleware.params :as prms]
+            [ring.middleware.stacktrace :as stack]
             [noir.session :as nses]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
             [hiccup.core :refer [html]]))
@@ -18,34 +20,32 @@
 
 ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
+
 ;;__ routings
 (defroutes app-routes
-  (GET "/" {session :session}
-       {:body (views/print-start)
-        :session (assoc session :cards-list (utils/get-cards) :correct-answer {})})
+  (GET "/" [] ;;TODO burada once session temizlenmeli
+       (let [cards-list (utils/get-cards)]
+         (nses/put! :cards-list cards-list)
+         (str
+          (views/print-remaining-cards cards-list)
+          (views/print-start))))
 
-  (GET "/print-question" {{:keys [cards-list again?]}  :session :as request}
-       (let [[selected-card options] (utils/get-card-and-options cards-list 3 )]
-         {:body  (views/print-question selected-card options)
-          :session (assoc (get-in request [:session]) :correct-answer selected-card)}))
+  (GET "/print-question" []
+       (let [cards-list (nses/get :cards-list)
+             [selected-card options] (utils/get-card-and-options cards-list 3 )]
+         (nses/put! :correct-answer selected-card)
+         (nses/put! :options options)
+         (str
+          (views/print-remaining-cards cards-list)
+          (views/print-question selected-card options))))
 
-  (GET "/check-answer" {{:keys [correct-answer cards-list exclude-list]}  :session
-                        {:strs [answer]} :query-params
-                        :as request}
-       (let [ca (str (:card-id correct-answer))
-             ans (str answer)
-             answer-correct? (= ca ans)]
-         (if answer-correct?
-           {:body  "DOGRU"
-            :session (assoc (get-in request [:session])
-                       :cards-list (utils/remove-cards-with-id (list (:card-id correct-answer)) cards-list  ))}
-           {:body "YANLIS"})))
-
-  (GET "/deneme" request
-       (nses/put! :ahanda "ver elidededeni"))
-
-  (GET "/geleme" request
-       (nses/get :ahanda "bulamadim anam"))
+  (GET "/check-answer" [answer]
+       (let [correct-answer (nses/get :correct-answer) ans (Long. answer)]
+         (if (= ans (:card-id correct-answer))
+           (do 
+             (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
+             (resp/redirect "/print-question"))
+           "YANLIS")))
 
   (route/resources "/")
 
@@ -59,8 +59,10 @@
 ;;__ application
 ;;th ordering is important
 (def app (-> #'app-routes
-             (enforce-content-type-middleware "text/html")
-             (wrap-defaults site-defaults)
+             ;;(enforce-content-type-middleware "text/html")
+             ;;(wrap-defaults site-defaults)
+             (stack/wrap-stacktrace)
+             (prms/wrap-params)
              (nses/wrap-noir-session {:store (memory-store nses/mem)})
              ))
 
