@@ -37,22 +37,22 @@
   ([] (load-cards "body-parts"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
-
+(defn get-name-wtho-ext [file]
+  (let [fullname (.getName file)]
+    (stri/upper-case (first (stri/split fullname #"\.")))
+    )
+  )
 
 (defn load-cards
-  "Creates a vector of maps for the given directory. FOr the list of files, first check"
+  "Creates a vector of maps for the given directory. Finds list of
+  files, removes directory entries, and returns a map for file, then
+  assigns :card-id s incrementally."
   [directory]
-  (map #(assoc %1 :card-id (inc %2))
-       (remove nil?
-               (for [file (.listFiles (io/file (str "resources/public/"  directory ))) ]
-                 (if (.isFile file)
-                   {:card-id 1 :category directory :word (.getName file) :img-file (str directory "/" (.getName file))}) ))
-       (range)))
-
-
-
-
-
+  (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
+        onlyFiles (remove #(.isDirectory %) allInDir)
+        vectorOfMaps (for [file onlyFiles]
+                       {:card-id 1 :category directory :word (get-name-wtho-ext file) :img-file (str directory "/" (.getName file))})]
+    (map #(assoc %1 :card-id (inc %2)) vectorOfMaps (range))))
 
 (load-cards "body-parts")
 
@@ -61,6 +61,9 @@
 
 
 (for [f  (.listFiles (io/file "resources/public/body-parts"))] (.length f))
+
+
+
 
 
 ;;(remove #(not ( .isDirectory %)) (.listFiles (io/file "resources/public/body-parts")))

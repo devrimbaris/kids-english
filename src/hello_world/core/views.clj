@@ -15,14 +15,13 @@
 
 ;;__ html page generators
 (defn print-question-form [selected-card options]
-  (html5 [:p
-          [:img {:src (:img-file selected-card)  :alt (:word selected-card)}] (:word selected-card)]
-         [:form {:action "/check-answer" :method "GET"}
-          (for [x options]
-            [:p  [:input
-                  {:type "radio" :name "answer" :value (:card-id x)}
-                  (:word x)]])
-          [:input {:type "submit" :name "submit" :value "submit"}]]))
+  (html5    [:img {:src (:img-file selected-card) }] 
+            [:form {:action "/check-answer" :method "GET"}
+             (for [x options]
+               [:p  [:input
+                     {:type "radio" :name "answer" :value (:card-id x)}
+                     (:word x)]])
+             [:input {:type "submit" :name "submit" :value "submit"}]]))
 
 
 (defn print-question [selected-card  options]
