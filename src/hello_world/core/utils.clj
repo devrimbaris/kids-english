@@ -1,5 +1,6 @@
 (ns hello-world.core.utils
-  (:require [clojure.string :as stri]))
+  (:require    [clojure.java.io :as io]
+               [clojure.string :as stri]))
 
 ;;__ utility functions
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
@@ -33,13 +34,33 @@
 
 ;;__ database
 (defn get-cards
-  ([] [{:card-id 1 :category "body" :word "head" :img-file "head.jpg"}
-       {:card-id 2 :category "body" :word "shoulders" :img-file "shoulders.jpg"}
-       {:card-id 3 :category "body" :word "knees" :img-file "knees.jpg"}
-       {:card-id 4 :category "body" :word "toes" :img-file "toes.jpg"}
-       {:card-id 5 :category "colours" :word "red" :img-file "red.jpg"}
-       {:card-id 6 :category "colours" :word "green" :img-file "green.jpg"}
-       {:card-id 7 :category "colours" :word "blue" :img-file "blue.jpg"}
-       {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
-       {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}])
+  ([] (load-cards "body-parts"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
+
+
+
+(defn load-cards
+  "Creates a vector of maps for the given directory. FOr the list of files, first check"
+  [directory]
+  (map #(assoc %1 :card-id (inc %2))
+       (remove nil?
+               (for [file (.listFiles (io/file (str "resources/public/"  directory ))) ]
+                 (if (.isFile file)
+                   {:card-id 1 :category directory :word (.getName file) :img-file (str directory "/" (.getName file))}) ))
+       (range)))
+
+
+
+
+
+
+(load-cards "body-parts")
+
+
+(for [f  (load-cards "body-parts")] (.getName f))
+
+
+(for [f  (.listFiles (io/file "resources/public/body-parts"))] (.length f))
+
+
+;;(remove #(not ( .isDirectory %)) (.listFiles (io/file "resources/public/body-parts")))
