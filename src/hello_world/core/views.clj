@@ -26,11 +26,24 @@
 
 (defn print-question [selected-card  options]
   (html5 [:html
-         [:head [:title "Word maze"]]
-         [:body
-          [:p
-           [:a {:href "/"} "Reload"]]
-          (print-question-form selected-card options)]]))
+          [:head [:title "Word maze"]]
+          [:body
+          (embed-audio selected-card)
+           (print-question-form selected-card options)
+           [:p
+            [:a {:href "/"} "Restart"]]]]))
+
+
+(defn embed-audio [{au-file :au-file}]
+  (str "<audio controls play autoplay>"
+       (html [ :source
+              {:src au-file
+               :type "audio/mpeg"}])
+
+       
+       "</audio>")
+  
+  )
 
 
 (defn print-remaining-cards [rem-cards]

@@ -1,7 +1,7 @@
 head:http://dictionary.cambridge.org/media/british/us_pron/h/hea/head_/head.mp3
 tummy:http://dictionary.cambridge.org/media/british/us_pron/t/tum/tummy/tummy.mp3
 arm:http://dictionary.cambridge.org/media/british/us_pron/a/arm/arm__/arm.mp3
-back:
+back:http://dictionary.cambridge.org/media/british/us_pron/b/bac/back_/back.mp3
 chin:
 ear:
 elbow:

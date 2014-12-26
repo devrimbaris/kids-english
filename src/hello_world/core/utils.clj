@@ -1,5 +1,6 @@
 (ns hello-world.core.utils
   (:require    [clojure.java.io :as io]
+               [clojure.pprint :as pp]
                [clojure.string :as stri]))
 
 ;;__ utility functions
@@ -32,6 +33,7 @@
             ]
         [selected-card options])))
 
+
 ;;__ database
 (defn get-cards
   ([] (load-cards "body-parts"))
@@ -39,9 +41,25 @@
 
 (defn get-name-wtho-ext [file]
   (let [fullname (.getName file)]
-    (stri/upper-case (first (stri/split fullname #"\.")))
+    (first (stri/split fullname #"\."))
     )
   )
+
+(defn- pad-with [s p]
+  (stri/replace (format "%-5s" s) " " p)
+
+  )
+
+(defn create-cambridge-url [wordtext]
+  "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
+  (let [t1 (str (first wordtext))
+        t2 (apply str (take 3 wordtext))
+        t3 (apply str (take 5 wordtext))
+        t4 (pad-with t3 "_")
+        ]
+    (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
+
+
 
 (defn load-cards
   "Creates a vector of maps for the given directory. Finds list of
@@ -51,8 +69,17 @@
   (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
         onlyFiles (remove #(.isDirectory %) allInDir)
         vectorOfMaps (for [file onlyFiles]
-                       {:card-id 1 :category directory :word (get-name-wtho-ext file) :img-file (str directory "/" (.getName file))})]
+                       {:card-id 1
+                        :category directory
+                        :word (stri/upper-case (get-name-wtho-ext file))
+                        :au-file (create-cambridge-url (get-name-wtho-ext file)  )
+                        :img-file (str directory "/" (.getName file))})]
     (map #(assoc %1 :card-id (inc %2)) vectorOfMaps (range))))
+
+
+
+
+
 
 (load-cards "body-parts")
 
@@ -60,10 +87,15 @@
 (for [f  (load-cards "body-parts")] (.getName f))
 
 
-(for [f  (.listFiles (io/file "resources/public/body-parts"))] (.length f))
+(doseq [f  (.listFiles (io/file "resources/public/body-parts"))] (println (stri/lower-case (get-name-wtho-ext f))))
 
 
 
 
 
-;;(remove #(not ( .isDirectory %)) (.listFiles (io/file "resources/public/body-parts")))
+
+
+
+
+
+

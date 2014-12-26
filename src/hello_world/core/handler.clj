@@ -25,6 +25,7 @@
 (defroutes app-routes
   (GET "/" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
+         (nses/clear!)
          (nses/put! :cards-list all-cards)
          (str
           (views/print-remaining-cards all-cards)
