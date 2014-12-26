@@ -4,47 +4,11 @@
                [clojure.string :as stri]))
 
 ;;__ utility functions
-(defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
-
-(defn find-all-values-in-map-with-key [keyname cards]
-  (reduce #(conj %1 (get %2 keyname))
-          []
-          cards))
-
-(defn convert-to-collection [x] (if (or  (coll? x) (seq? x)) (flatten x) (list x) ))
-
-(defn remove-cards-with-id [cards & ids]
-  (let [id-list (convert-to-collection ids)]
-    (print ids)
-    (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
-
-;;TODO option kisimlari tum card listesinden gelmeli
-(defn get-card-and-options [cards options-count]
-  (if (nil? cards) []
-      (let [selected-card (rand-nth cards)
-            x (- (count (get-cards)) options-count)
-            options (-> (get-cards)
-                        (shuffle)
-                        (remove-cards-with-id (:card-id selected-card))
-                        (nthrest x)
-                        (conj selected-card)
-                        (shuffle)
-                        )
-            ]
-        [selected-card options])))
-
-
-;;__ database
-(defn get-cards
-  ([] (load-cards "body-parts"))
-  ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
-
 (defn get-name-wtho-ext [file]
   (let [fullname (.getName file)]
     (first (stri/split fullname #"\."))
     )
   )
-
 (defn- pad-with [s p]
   (stri/replace (format "%-5s" s) " " p)
 
@@ -59,8 +23,7 @@
         ]
     (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
 
-
-
+;;__ database
 (defn load-cards
   "Creates a vector of maps for the given directory. Finds list of
   files, removes directory entries, and returns a map for file, then
@@ -79,15 +42,50 @@
 
 
 
+(defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
+
+(defn find-all-values-in-map-with-key [keyname cards]
+  (reduce #(conj %1 (get %2 keyname))
+          []
+          cards))
+
+(defn convert-to-collection [x] (if (or  (coll? x) (seq? x)) (flatten x) (list x) ))
+
+(defn remove-cards-with-id [cards & ids]
+  (let [id-list (convert-to-collection ids)]
+    (print ids)
+    (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
 
-(load-cards "body-parts")
+(defn get-cards
+  ([] (load-cards "body-parts"))
+  ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
+
+;;TODO option kisimlari tum card listesinden gelmeli
+(defn get-card-and-options [cards options-count]
+  (if (nil? cards) []
+      (let [selected-card (rand-nth cards)
+            x (- (count (get-cards)) options-count)
+            options (-> (get-cards)
+                        (shuffle)
+                        (remove-cards-with-id (:card-id selected-card))
+                        (nthrest x)
+                        (conj selected-card)
+                        (shuffle)
+                        )
+            ]
+        [selected-card options])))
 
 
-(for [f  (load-cards "body-parts")] (.getName f))
 
 
-(doseq [f  (.listFiles (io/file "resources/public/body-parts"))] (println (stri/lower-case (get-name-wtho-ext f))))
+;; (load-cards "body-parts")
+
+
+;; (for [f  (load-cards "body-parts")] (.getName f))
+
+
+;; (doseq [f  (.listFiles (io/file "resources/public/body-parts"))] (println (stri/lower-case (get-name-wtho-ext f))))
 
 
 

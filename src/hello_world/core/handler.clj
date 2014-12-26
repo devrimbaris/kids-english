@@ -41,16 +41,19 @@
           (views/print-question selected-card options))))
 
   (GET "/check-answer" [answer]
-       (let [correct-answer (nses/get :correct-answer) ans (Long. answer)]
+       (let [correct-answer (nses/get :correct-answer) ans (Long. answer) ]
          (if (= ans (:card-id correct-answer))
            (do 
              (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
-             (resp/redirect "/print-question"))
-           "YANLIS")))
+             (if (> (count (nses/get :cards-list)) 0) (resp/redirect "/print-question") (resp/redirect "/") ))
+           (resp/redirect "/print-question"))))
 
   (route/resources "/")
 
   (route/not-found "Not Found"))
+
+
+(> 1 5)
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]
