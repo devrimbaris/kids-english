@@ -19,10 +19,15 @@
 ;;TODO option kisimlari tum card listesinden gelmeli
 (defn get-card-and-options [cards options-count]
   (if (nil? cards) []
-      (let [options (->> cards
-                         (shuffle)
-                         (take options-count))
-            selected-card (rand-nth options)]
+      (let [selected-card (rand-nth cards)
+            x (- (count (get-cards)) options-count)
+            options (-> (get-cards)
+                        (shuffle)
+                        (remove-cards-with-id (:card-id selected-card))
+                        (nthrest x)
+                        (conj selected-card)
+                        )
+            ]
         [selected-card options])))
 
 ;;__ database
@@ -37,8 +42,3 @@
        {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
        {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}])
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
-
-
-
-
-
