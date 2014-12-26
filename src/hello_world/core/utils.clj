@@ -1,8 +1,6 @@
 (ns hello-world.core.utils
   (:require [clojure.string :as stri]))
 
-
-
 ;;__ utility functions
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
 
@@ -11,9 +9,14 @@
           []
           cards))
 
-(defn remove-cards-with-id [id-list cards]
-  (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list))
+(defn convert-to-collection [x] (if (or  (coll? x) (seq? x)) (flatten x) (list x) ))
 
+(defn remove-cards-with-id [cards & ids]
+  (let [id-list (convert-to-collection ids)]
+    (print ids)
+    (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
+
+;;TODO option kisimlari tum card listesinden gelmeli
 (defn get-card-and-options [cards options-count]
   (if (nil? cards) []
       (let [options (->> cards
@@ -34,5 +37,8 @@
        {:card-id 8 :category "adj" :word "wet" :img-file "wet.jpg"}
        {:card-id 9 :category "adj" :word "dry" :img-file "dry.jpg"}])
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
+
+
+
 
 
