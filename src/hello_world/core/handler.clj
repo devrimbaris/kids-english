@@ -24,10 +24,10 @@
 ;;__ routings
 (defroutes app-routes
   (GET "/" [] ;;TODO burada once session temizlenmeli
-       (let [cards-list (utils/get-cards)]
-         (nses/put! :cards-list cards-list)
+       (let [all-cards (utils/get-cards)]
+         (nses/put! :cards-list all-cards)
          (str
-          (views/print-remaining-cards cards-list)
+          (views/print-remaining-cards all-cards)
           (views/print-start))))
 
   (GET "/print-question" []
