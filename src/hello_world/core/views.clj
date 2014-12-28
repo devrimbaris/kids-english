@@ -20,21 +20,26 @@
        "</audio>"))
 
 ;;__ html page generators
+
+
+;   [:p (embed-audio selected-card)]
 (defn print-question-form [selected-card options]
-  (html5    [:img {:src (:img-file selected-card) }]
-            [:p (embed-audio selected-card)]
-            [:form {:action "/check-answer" :method "GET"}
-             (for [x options]
-               [:p  [:input
-                     {:type "radio" :name "answer" :value (:card-id x)}
-                     (:word x)]])
-             [:input {:type "submit" :name "submit" :value "submit"}]]))
+  (html5
+   [:table [:tr
+            [:td [:img {:src (:img-file selected-card) }]]
+            [:td {:valign "top"} [:div {:style "padding-top: 5px; padding-left: 35;"} 
+                     [:form {:action "/check-answer" :method "GET"}
+                      (for [x options]
+                        [:p  [:input
+                              {:type "radio" :name "answer" :value (:card-id x)}
+                              (:word x)]])
+                      [:input {:type "submit" :name "submit" :value "submit"}]]]]]]))
 
 (defn print-question [selected-card  options]
   (html5 [:html
           [:head [:title "Word maze"]]
           [:body
-          
+
            (print-question-form selected-card options)
            [:p
             [:a {:href "/"} "Restart"]]]]))
@@ -50,12 +55,3 @@
            [:p
             [:a {:href "/print-question"} "Start"]]
            ]]))
-
-
-
-
-
-
-
-
-
