@@ -59,7 +59,7 @@
 
 
 (defn get-cards
-  ([] (load-cards "body-parts" "colours"))
+  ([] (load-cards "body-parts" "colours" "geometry"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
