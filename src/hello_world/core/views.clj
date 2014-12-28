@@ -45,7 +45,7 @@
 
            (print-question-form selected-card options)
            [:p
-            [:a {:href "/"} "Restart"]]]]))
+            [:a {:href "/"} "BAŞA DÖN"]]]]))
 
 (defn print-remaining-cards [rem-cards]
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
