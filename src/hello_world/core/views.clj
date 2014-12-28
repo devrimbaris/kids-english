@@ -12,7 +12,11 @@
             [hiccup.page :refer [html5]]
             [hiccup.core :refer [html]]))
 
-(defn embed-audio [{au-file :au-file}]
+
+;;usage ;   [:p (embed-audio selected-card)]
+(defn embed-audio
+  "Map vasitasiyla gecilen card bilgilerine gore bir audio dosyasi linki ekler."
+  [{au-file :au-file}]
   (str "<audio controls play autoplay>"
        (html [ :source
               {:src au-file
@@ -22,7 +26,7 @@
 ;;__ html page generators
 
 
-;   [:p (embed-audio selected-card)]
+
 (defn print-question-form [selected-card options]
   (html5
    [:table [:tr
@@ -37,7 +41,9 @@
 
 (defn print-question [selected-card  options]
   (html5 [:html
-          [:head [:title "Word maze"]]
+          [:head
+           [:title "Word maze"]
+           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
           [:body
 
            (print-question-form selected-card options)
