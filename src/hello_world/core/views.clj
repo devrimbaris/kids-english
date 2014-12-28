@@ -24,9 +24,6 @@
        "</audio>"))
 
 ;;__ html page generators
-
-
-
 (defn print-question-form [selected-card options]
   (html5
    [:table [:tr
