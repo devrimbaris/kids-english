@@ -25,21 +25,22 @@
 
 ;;__ database
 (defn load-cards
-  "Creates a vector of maps for the given directory. Finds list of
+  "Creates a vector of maps for the given set  directory. Finds list of
   files, removes directory entries, and returns a map for file, then
   assigns :card-id s incrementally."
-  [directory]
-  (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
-        onlyFiles (remove #(.isDirectory %) allInDir)
-        vectorOfMaps (for [file onlyFiles]
-                       {:card-id 1
-                        :category directory
-                        :word (stri/upper-case (get-name-wtho-ext file))
-                        :au-file (create-cambridge-url (get-name-wtho-ext file)  )
-                        :img-file (str directory "/" (.getName file))})]
-    (map #(assoc %1 :card-id (inc %2)) vectorOfMaps (range))))
-
-
+  [& directories]
+  (let [ all-cards  
+        (flatten  (for [directory directories]
+                    (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
+                          onlyFiles (remove #(.isDirectory %) allInDir)
+                          vectorOfMaps (for [file onlyFiles]
+                                         {:card-id 1
+                                          :category directory
+                                          :word (stri/upper-case (get-name-wtho-ext file))
+                                          :au-file (create-cambridge-url (get-name-wtho-ext file)  )
+                                          :img-file (str directory "/" (.getName file))})]
+                      vectorOfMaps)))]
+    (map #(assoc %1 :card-id (inc %2)) all-cards (range))))
 
 
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
@@ -58,7 +59,7 @@
 
 
 (defn get-cards
-  ([] (load-cards "body-parts"))
+  ([] (load-cards "body-parts" "colours"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -75,8 +76,6 @@
                         )
             ]
         [selected-card options])))
-
-
 
 
 ;; (load-cards "body-parts")
