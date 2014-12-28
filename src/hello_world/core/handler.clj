@@ -26,6 +26,8 @@
          (nses/clear!)
          (nses/put! :feedback "HAYDİ BAŞLAYALIM") 
          (nses/put! :cards-list all-cards)
+         (nses/put! :c-cards (count all-cards))
+         (nses/put! :c-progress 1)
          (str
           (views/print-start))))
 
@@ -35,7 +37,7 @@
          (nses/put! :correct-answer selected-card)
          (nses/put! :options options)
          (str
-          (html [:p  (nses/get :feedback)]) 
+          (html [:p  (str  (nses/get :feedback) "     (" (nses/get :c-progress) " / " (nses/get :c-cards) ")")])
           (views/print-question selected-card options))))
 
   (GET "/check-answer" [answer]

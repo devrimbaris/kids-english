@@ -57,9 +57,8 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "geometry"))
+  ([] (load-cards    "body-parts" "colours" "geometry" "weather"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
