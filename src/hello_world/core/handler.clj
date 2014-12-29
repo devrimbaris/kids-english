@@ -20,6 +20,22 @@
 ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
 ;;__ routings
+
+(defn increase-progress []
+  (let [current-value (nses/get :c-progress)]
+    (nses/put! :c-progress (inc current-value))))
+
+(defn do-print-question [answer-status?]
+  (let [cards-list (nses/get :cards-list)]
+    (if answer-status?
+      (let [[selected-card options] (utils/get-card-and-options cards-list 5 )]
+        (nses/put! :correct-answer selected-card)
+        (nses/put! :options options)
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options))
+      (let [selected-card (nses/get :correct-answer)
+            options (nses/get :options)]
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options)))))
+
 (defroutes app-routes
   (GET "/" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
@@ -28,32 +44,33 @@
          (nses/put! :cards-list all-cards)
          (nses/put! :c-cards (count all-cards))
          (nses/put! :c-progress 1)
+         (nses/put! :answer-status true)
          (str
           (views/print-start))))
 
   (GET "/print-question" []
-       (let [cards-list (nses/get :cards-list)
-             [selected-card options] (utils/get-card-and-options cards-list 5 )]
-         (nses/put! :correct-answer selected-card)
-         (nses/put! :options options)
-         (str
-          (html [:p  (str  (nses/get :feedback) "     (" (nses/get :c-progress) " / " (nses/get :c-cards) ")")])
-          (views/print-question selected-card options))))
+       (let [answer-status? (nses/get :answer-status)]
+         (do-print-question answer-status?)))
 
   (GET "/check-answer" [answer]
        (let [correct-answer (nses/get :correct-answer) ans (Long. answer) ]
          (if (= ans (:card-id correct-answer))
            (do 
              (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
-             (nses/put! :feedback "B R A V O")
+             (nses/put! :feedback "BRAVO")
+             (nses/put! :answer-status true)
+             (increase-progress)
              (if (> (count (nses/get :cards-list)) 0) (resp/redirect "/print-question") (resp/redirect "/") ))
            (do
-             (nses/put! :feedback "TEKRAR DENE" )
+             (nses/put! :feedback "TEKRAR DENE")
+             (nses/put! :answer-status false)
              (resp/redirect "/print-question")))))
 
   (route/resources "/")
 
   (route/not-found "Not Found"))
+
+
 
 
 (defn enforce-content-type-middleware [hndlr content-type]

@@ -23,6 +23,9 @@
                :type "audio/mpeg"}])
        "</audio>"))
 
+
+
+
 ;;__ html page generators
 (defn print-question-form [selected-card options]
   (html5
@@ -46,6 +49,11 @@
            (print-question-form selected-card options)
            [:p
             [:a {:href "/"} "BAŞA DÖN"]]]]))
+
+(defn html-print-question [feedback c-progress c-cards selected-card options]
+  (str
+   (html [:p  (str  feedback  "     (" c-progress " / " c-cards ")")])
+       (print-question selected-card options)))
 
 (defn print-remaining-cards [rem-cards]
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
