@@ -20,10 +20,14 @@
 ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
 ;;__ routings
-
 (defn increase-progress []
   (let [current-value (nses/get :c-progress)]
     (nses/put! :c-progress (inc current-value))))
+
+(defn record-wrong [wrong-card]
+  (let [wrongs-list (nses/get :wrongs-list)
+        edited-list (remove #(= (:card-id %) (:card-id wrong-card)) wrongs-list)]
+    (nses/put! :wrongs-list (conj edited-list wrong-card))))
 
 (defn do-print-question [answer-status?]
   (let [cards-list (nses/get :cards-list)]
@@ -42,6 +46,7 @@
          (nses/clear!)
          (nses/put! :feedback "HAYDİ BAŞLAYALIM") 
          (nses/put! :cards-list all-cards)
+         (nses/put! :wrongs-list [])
          (nses/put! :c-cards (count all-cards))
          (nses/put! :c-progress 1)
          (nses/put! :answer-status true)
@@ -52,6 +57,9 @@
        (let [answer-status? (nses/get :answer-status)]
          (do-print-question answer-status?)))
 
+  (GET "/print-results" []
+       (views/do-print-results (nses/get :wrongs-list) (nses/get :c-cards)))
+
   (GET "/check-answer" [answer]
        (let [correct-answer (nses/get :correct-answer) ans (Long. answer) ]
          (if (= ans (:card-id correct-answer))
@@ -60,18 +68,17 @@
              (nses/put! :feedback "BRAVO")
              (nses/put! :answer-status true)
              (increase-progress)
-             (if (> (count (nses/get :cards-list)) 0) (resp/redirect "/print-question") (resp/redirect "/") ))
+             (if (> (count (nses/get :cards-list)) 0)
+               (resp/redirect "/print-question")
+               (resp/redirect "/print-results")))
            (do
+             (record-wrong correct-answer)
              (nses/put! :feedback "TEKRAR DENE")
              (nses/put! :answer-status false)
              (resp/redirect "/print-question")))))
 
   (route/resources "/")
-
   (route/not-found "Not Found"))
-
-
-
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]

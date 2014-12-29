@@ -23,8 +23,18 @@
                :type "audio/mpeg"}])
        "</audio>"))
 
+(defn- get-result-map [wrongs-list allcount]
+  (let [number-wrongs (count wrongs-list)
+        number-rights (- allcount number-wrongs)]
+    {:toplam-soru-sayisi allcount
+     :toplam-yanlis-sayisi number-wrongs
+     :toplam-dogru-sayisi number-rights
+     :yanlis-kelimeler (map :word wrongs-list)}))
 
-
+(defn do-print-results [wrongs-list allcount]
+  (let [result-map (get-result-map wrongs-list allcount)
+        entries (for [x result-map] x)]
+    entries))
 
 ;;__ html page generators
 (defn print-question-form [selected-card options]
