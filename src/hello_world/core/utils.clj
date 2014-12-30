@@ -6,13 +6,10 @@
 ;;__ utility functions
 (defn get-name-wtho-ext [file]
   (let [fullname (.getName file)]
-    (first (stri/split fullname #"\."))
-    )
-  )
-(defn- pad-with [s p]
-  (stri/replace (format "%-5s" s) " " p)
+    (first (stri/split fullname #"\."))))
 
-  )
+(defn- pad-with [s p]
+  (stri/replace (format "%-5s" s) " " p))
 
 (defn create-cambridge-url [wordtext]
   "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
@@ -90,11 +87,13 @@
     [missing random-cut (shuffle options)]))
 
 
+(defn ordered-questions-map []
+  (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
+        parsed-items (for [i items] (stri/split i #":"))
+        maps (reduce #(cons {:category (first %2) :items (vec (rest %2))}  %1) [] parsed-items)]
+    maps))
 
-;; (defn ordered-questions-map []
-;;   (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
-;;         ]
-;;     [{:category "   " :liste []}]))
+(ordered-questions-map)
 
 ;; (for [f  (load-cards "body-parts")] (.getName f))
 
