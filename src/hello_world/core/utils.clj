@@ -57,10 +57,8 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-
-
 (defn get-cards
-  ([] (load-cards    "body-parts" "colours" "geometry" "weather" "school" "family"))
+  ([] (load-cards    "body-parts" "colours" "geometry" "weather" "school"  "family"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -78,14 +76,32 @@
             ]
         [selected-card options])))
 
+(defn ordered-generate-missing-and-options [ordered-list options-count]
+  "Sample call:(ordered-generate-missing-and-options [1 2 3 4 5 6 7 8] 5)"
+  (let [random-cut (take 3 (drop (rand-int 100) (cycle ordered-list)))
+        missing (second random-cut)
+        all-remaining-options (clojure.set/difference (set (shuffle  ordered-list)) (set random-cut))
+        options (->> all-remaining-options
+                     (shuffle)
+                     (take (dec options-count))
+                     (cons missing)
+                     (shuffle)
+                     )]
+    [missing random-cut (shuffle options)]))
 
-;; (load-cards "body-parts")
 
+
+;; (defn ordered-questions-map []
+;;   (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
+;;         ]
+;;     [{:category "   " :liste []}]))
 
 ;; (for [f  (load-cards "body-parts")] (.getName f))
 
-
 ;; (doseq [f  (.listFiles (io/file "resources/public/body-parts"))] (println (stri/lower-case (get-name-wtho-ext f))))
+
+
+
 
 
 
