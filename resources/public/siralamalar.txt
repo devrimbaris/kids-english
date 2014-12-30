@@ -1,0 +1,4 @@
+Aylar-Türkçe:Ocak:Şubat:Mart:Nisan:Mayıs:Haziran:Temmuz:Ağustos:Eylül:Ekim:Kasım:Aralık
+Months-English:January:February:March:April:May:June:July:August:September:October:November:December
+Günler-Türkçe:Pazartesi:Salı:Çarşamba:Perşembe:Cuma:Cumartesi:Pazar
+Days-English:Monday:Tuesday:Wednesday:Thursday:Friday:Saturday:Sunday
