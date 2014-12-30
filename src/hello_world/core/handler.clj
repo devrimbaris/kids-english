@@ -40,6 +40,9 @@
             options (nses/get :options)]
         (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options)))))
 
+(defn do-print-ordered-question [{category :category}]
+  [])
+
 (defroutes app-routes
   (GET "/" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
@@ -76,6 +79,9 @@
              (nses/put! :feedback "TEKRAR DENE")
              (nses/put! :answer-status false)
              (resp/redirect "/print-question")))))
+
+  (GET "/print-ordered" []
+       (do-print-ordered-question))
 
   (route/resources "/")
   (route/not-found "Not Found"))

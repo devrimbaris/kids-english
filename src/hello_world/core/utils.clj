@@ -87,13 +87,19 @@
     [missing random-cut (shuffle options)]))
 
 
-(defn ordered-questions-map []
+(defn- ordered-questions-map []
   (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
         parsed-items (for [i items] (stri/split i #":"))
         maps (reduce #(cons {:category (first %2) :items (vec (rest %2))}  %1) [] parsed-items)]
     maps))
 
-(ordered-questions-map)
+
+(format "%tF" (java.util.Date.))
+
+;(ordered-questions-map)
+
+;(ordered-generate-missing-and-options (:items  (last (ordered-questions-map))) 4 )
+
 
 ;; (for [f  (load-cards "body-parts")] (.getName f))
 
