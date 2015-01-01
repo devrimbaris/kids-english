@@ -70,21 +70,24 @@
        (views/do-print-results (nses/get :wrongs-list) (nses/get :c-cards)))
 
   (GET "/check-answer" [answer]
-       (let [correct-answer (nses/get :correct-answer) ans (Long. answer) ]
-         (if (= ans (:card-id correct-answer))
-           (do 
-             (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
-             (nses/put! :feedback "BRAVO")
-             (nses/put! :answer-status true)
-             (increase-progress)
-             (if (> (count (nses/get :cards-list)) 0)
-               (resp/redirect "/print-question")
-               (resp/redirect "/print-results")))
-           (do
-             (record-wrong correct-answer)
-             (nses/put! :feedback "TEKRAR DENE")
-             (nses/put! :answer-status false)
-             (resp/redirect "/print-question")))))
+       (if (nil? answer)
+         (do (nses/put! :answer-status false)
+             (resp/redirect "print-question")) 
+         (let [correct-answer (nses/get :correct-answer) ans (Long. answer) ]
+           (if (= ans (:card-id correct-answer))
+             (do 
+               (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
+               (nses/put! :feedback "BRAVO")
+               (nses/put! :answer-status true)
+               (increase-progress)
+               (if (> (count (nses/get :cards-list)) 0)
+                 (resp/redirect "/print-question")
+                 (resp/redirect "/print-results")))
+             (do
+               (record-wrong correct-answer)
+               (nses/put! :feedback "TEKRAR DENE")
+               (nses/put! :answer-status false)
+               (resp/redirect "/print-question"))))))
 
   (route/resources "/")
   (route/not-found "Not Found"))
