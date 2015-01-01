@@ -69,10 +69,15 @@
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
     (html [:p (reduce str (interpose "-" id-list))])))
 
-(defn print-start []
+(defn print-options []
   (html5 [:html
+          [:head
+           [:title "Word maze"]
+           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
           [:head [:title "Word maze start"]]
           [:body
-           [:p
-            [:a {:href "/print-question"} "Start"]]
-           ]]))
+           [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
+           [:p  [:a {:href "/start-ordered?selection=aylar-turkce"} "Yılın Ayları"]]
+           [:p  [:a {:href "/start-ordered?selection=aylar-english"} "Months of the Year"]]
+           [:p  [:a {:href "/start-ordered?selection=gunler-turkce"} "Haftanın Günleri"]]
+           [:p  [:a {:href "/start-ordered?selection=gunler-english"} "Days of the Week"]]]]))

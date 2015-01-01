@@ -21,7 +21,7 @@
     (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
 
 ;;__ database
-(defn load-cards
+(defn- load-cards
   "Creates a vector of maps for the given set  directory. Finds list of
   files, removes directory entries, and returns a map for file, then
   assigns :card-id s incrementally."
@@ -55,7 +55,7 @@
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
 (defn get-cards
-  ([] (load-cards    "body-parts" "colours" "geometry" "weather" "school"  "family"))
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" ))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli

@@ -40,11 +40,15 @@
             options (nses/get :options)]
         (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options)))))
 
-(defn do-print-ordered-question [{category :category}]
-  [])
-
 (defroutes app-routes
+
   (GET "/" [] ;;TODO burada once session temizlenmeli
+       (do
+         (nses/clear!)
+         (str (views/print-options))))
+
+  
+  (GET "/start-word-maze" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
          (nses/clear!)
          (nses/put! :feedback "HAYDİ BAŞLAYALIM") 
@@ -53,12 +57,14 @@
          (nses/put! :c-cards (count all-cards))
          (nses/put! :c-progress 1)
          (nses/put! :answer-status true)
-         (str
-          (views/print-start))))
+         (resp/redirect "/print-question")))
 
   (GET "/print-question" []
        (let [answer-status? (nses/get :answer-status)]
          (do-print-question answer-status?)))
+
+  (GET "/start-ordered" [selection]
+       selection)
 
   (GET "/print-results" []
        (views/do-print-results (nses/get :wrongs-list) (nses/get :c-cards)))
@@ -79,9 +85,6 @@
              (nses/put! :feedback "TEKRAR DENE")
              (nses/put! :answer-status false)
              (resp/redirect "/print-question")))))
-
-  (GET "/print-ordered" []
-       (do-print-ordered-question))
 
   (route/resources "/")
   (route/not-found "Not Found"))
