@@ -40,7 +40,7 @@
 (defn print-question-form [selected-card options]
   (html5
    [:table [:tr
-            [:td [:img {:src (:img-file selected-card) }]]
+            [:td [:img {:src (:img-file selected-card) :height 320 :width 320}]]
             [:td {:valign "top"} [:div {:style "padding-top: 5px; padding-left: 35;"} 
                      [:form {:action "/check-answer" :method "GET"}
                       (for [x options]

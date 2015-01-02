@@ -6,6 +6,7 @@
             [compojure.route :as route]
             [hello-world.core.utils :as utils]
             [hello-world.core.views :as views]
+            [hello-world.core.ordered-handler :as ordered]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]
@@ -63,9 +64,7 @@
        (let [answer-status? (nses/get :answer-status)]
          (do-print-question answer-status?)))
 
-  (GET "/start-ordered" [selection]
-       selection)
-
+  
   (GET "/print-results" []
        (views/do-print-results (nses/get :wrongs-list) (nses/get :c-cards)))
 
@@ -89,8 +88,11 @@
                (nses/put! :answer-status false)
                (resp/redirect "/print-question"))))))
 
+  #'ordered/ordered-routes
   (route/resources "/")
   (route/not-found "Not Found"))
+
+
 
 (defn enforce-content-type-middleware [hndlr content-type]
   (fn [request]

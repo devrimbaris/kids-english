@@ -54,8 +54,10 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
+
+
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" ))
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" )) 
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -94,7 +96,16 @@
     maps))
 
 
-(format "%tF" (java.util.Date.))
+(defn get-random-ordered-question [selection]
+  (let [all-ordereds (ordered-questions-map)
+        my (first (filter #(= (:category %) selection) all-ordereds))
+        ordered-list (:items my)]
+    (ordered-generate-missing-and-options ordered-list 4)))
+
+
+
+
+;; (format "%tF" (java.util.Date.))
 
 ;(ordered-questions-map)
 
