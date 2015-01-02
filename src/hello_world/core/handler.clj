@@ -36,10 +36,10 @@
       (let [[selected-card options] (utils/get-card-and-options cards-list 5 )]
         (nses/put! :correct-answer selected-card)
         (nses/put! :options options)
-        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options))
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card)))
       (let [selected-card (nses/get :correct-answer)
             options (nses/get :options)]
-        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options)))))
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card))))))
 
 (defroutes app-routes
 

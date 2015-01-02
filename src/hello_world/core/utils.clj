@@ -75,6 +75,16 @@
             ]
         [selected-card options])))
 
+(defn find-qu-text [card]
+  (let [category (:category card)]
+    (case category
+      "colours" "What colour is it?"
+      "family"  "Family members"
+      "geometry" "What shape is it?"
+      "weather"  "How is the weather like today?"
+      "health" "How is he?"
+      "What is it?")))
+
 (defn ordered-generate-missing-and-options [ordered-list options-count]
   "Sample call:(ordered-generate-missing-and-options [1 2 3 4 5 6 7 8] 5)"
   (let [random-cut (take 3 (drop (rand-int 100) (cycle ordered-list)))

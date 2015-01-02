@@ -37,33 +37,35 @@
     entries))
 
 ;;__ html page generators
-(defn print-question-form [selected-card options]
+(defn print-question-form [selected-card options question-text]
   (html5
-   [:table [:tr
-            [:td [:img {:src (:img-file selected-card) :height 320 :width 320}]]
-            [:td {:valign "top"} [:div {:style "padding-top: 5px; padding-left: 35;"} 
-                     [:form {:action "/check-answer" :method "GET"}
-                      (for [x options]
-                        [:p  [:input
-                              {:type "radio" :name "answer" :value (:card-id x)}
-                              (:word x)]])
-                      [:input {:type "submit" :name "submit" :value "submit"}]]]]]]))
+   
+   [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"} question-text] ]]
+   [:div {:class "pure-g"}
+    [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  :width 400}]]
+    [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"} 
+                          [:form {:action "/check-answer" :method "GET"}
+                           (for [x options]
+                             [:p  [:input
+                                   {:type "radio" :name "answer" :value (:card-id x)}
+                                   (:word x)]])
+                           [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]]))
 
-(defn print-question [selected-card  options]
+(defn- print-question [selected-card  options question-text]
   (html5 [:html
           [:head
            [:title "Word maze"]
            [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
           [:body
 
-           (print-question-form selected-card options)
+           (print-question-form selected-card options question-text)
            [:p
             [:a {:href "/"} "BAŞA DÖN"]]]]))
 
-(defn html-print-question [feedback c-progress c-cards selected-card options]
+(defn html-print-question [feedback c-progress c-cards selected-card options question-text]
   (str
    (html [:p  (str  feedback  "     (" c-progress " / " c-cards ")")])
-       (print-question selected-card options)))
+       (print-question selected-card options question-text)))
 
 (defn print-remaining-cards [rem-cards]
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
