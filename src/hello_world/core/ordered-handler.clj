@@ -15,7 +15,7 @@
 
 
 (defn- print-next-question [selection]
-  (let [question (utils/get-random-ordered-question selection)]
+  (let [question (utils/get-random-ordered-question selection (nses/get :questions-asked))]
     (nses/put! :question question)
     (vo/print-ordered-question question)))
 
@@ -24,10 +24,11 @@
   [selection]
   (do
     (nses/clear!)
-    (nses/put! :c-progress 0)
+    (nses/put! :c-progress 1)
     (nses/put! :c-rights 0)
     (nses/put! :total-questions 3)
     (nses/put! :selection selection)
+    (nses/put! :questions-asked [])
     (print-next-question selection)))
 
 
@@ -36,16 +37,17 @@
    (context "/ordered" []
 
             (GET "/start-ordered" [selection]
-                 (do (do-start-ordered selection)))
+                 (do-start-ordered selection))
 
             (GET "/check-answer" [answer]
                  (let [{correct-answer :missing} (nses/get :question)]
                    (if (= answer correct-answer)
                      (do
-                       (hacommon/increase-rights)
-                       (hacommon/increase-progress) 
+                       (nses/put! :questions-asked (conj (nses/get :questions-asked) answer))
                        (if (< (:c-progress (hacommon/get-progress)) (nses/get :total-questions))
-                         (print-next-question (nses/get :selection))
+                         (do
+                           (hacommon/increase-progress) 
+                           (print-next-question (nses/get :selection)))
                          (vo/print-report (hacommon/get-progress))))
                      (do
                        (hacommon/record-wrong correct-answer )

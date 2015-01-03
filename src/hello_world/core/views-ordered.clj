@@ -36,13 +36,15 @@
 
 
 (defn print-ordered-question [question]
-  (with-page-template get-question-text question))
+  (with-page-template get-question-text question)
+  )
 
 (defn- get-report [ & all]
   (apply str all))
 
 (defn print-report [progress]
-  (with-page-template get-report progress))
+  (with-page-template get-report progress)
+  )
 
 
 

@@ -104,18 +104,30 @@
         maps (reduce #(cons {:category (first %2) :items (vec (rest %2))}  %1) [] parsed-items)]
     maps))
 
-(defn get-random-ordered-question [selection]
-  (let [all-ordereds (ordered-questions-map)
-        my (first (filter #(= (:category %) selection) all-ordereds))
-        ordered-list (:items my)]
-    (ordered-generate-missing-and-options ordered-list 4)))
+(defn get-random-ordered-question
+  ([selection]
+   (let [all-ordereds (ordered-questions-map)
+         my (first (filter #(= (:category %) selection) all-ordereds))
+         ordered-list (:items my)]
+     (ordered-generate-missing-and-options ordered-list 4)))
+  
+  ([selection previous-list]
+   (loop [m (get-random-ordered-question selection) ]
+     (let [ x (:missing m)]
+       (if-not (some #(= x %) previous-list)
+         m
+         (recur (get-random-ordered-question selection) ))))))
 
+
+(get-random-ordered-question "Aylar-Türkçe" [ "Mart"]
+                             )
 
 
 ;;////////////////////////////////////
-(ordered-questions-map)
+;(ordered-questions-map)
 
-(get-random-ordered-question "Aylar-T�rk�e")
+;(get-random-ordered-question "Aylar-Türkçe")
+
 
 ;; (format "%tF" (java.util.Date.))
 

@@ -21,10 +21,7 @@
     (nses/put! :c-progress (inc current-value))
     (inc current-value)))
 
-(defn increase-rights []
-(let [current-value (nses/get :c-rights)]
-    (nses/put! :c-rights (inc current-value))
-    (inc current-value)))
+
 
 (defn record-wrong [wrong]
   (let [wrongs-list (nses/get :wrongs-list)
@@ -33,7 +30,7 @@
 
 (defn get-progress []
   {:c-progress (nses/get :c-progress)
-   :total-questions (nses/get :total-questions 115)
-   :c-rights (nses/get :c-rights)
+   :total-questions (nses/get :total-questions )
+   :c-rights (- (nses/get :total-questions ) (count (nses/get :wrongs-list))) 
    :wrongs-list (nses/get :wrongs-list)
    :c-wrongs (count (nses/get :wrongs-list))})
