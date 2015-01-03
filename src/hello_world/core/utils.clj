@@ -54,10 +54,9 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-
-
+;  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" )) 
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" )) 
+  ([] (load-cards  "family")) 
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -88,6 +87,7 @@
 (defn ordered-generate-missing-and-options [ordered-list options-count]
   "Sample call:(ordered-generate-missing-and-options [1 2 3 4 5 6 7 8] 5)"
   (let [random-cut (take 3 (drop (rand-int 100) (cycle ordered-list)))
+        [f1 _ f2] random-cut
         missing (second random-cut)
         all-remaining-options (clojure.set/difference (set (shuffle  ordered-list)) (set random-cut))
         options (->> all-remaining-options
@@ -96,15 +96,13 @@
                      (cons missing)
                      (shuffle)
                      )]
-    [missing random-cut (shuffle options)]))
-
+    {:missing  missing :f1  f1 :f2 f2 :options (shuffle options)}))
 
 (defn- ordered-questions-map []
   (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
         parsed-items (for [i items] (stri/split i #":"))
         maps (reduce #(cons {:category (first %2) :items (vec (rest %2))}  %1) [] parsed-items)]
     maps))
-
 
 (defn get-random-ordered-question [selection]
   (let [all-ordereds (ordered-questions-map)
@@ -114,6 +112,10 @@
 
 
 
+;;////////////////////////////////////
+(ordered-questions-map)
+
+(get-random-ordered-question "Aylar-Türkçe")
 
 ;; (format "%tF" (java.util.Date.))
 

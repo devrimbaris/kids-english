@@ -23,16 +23,8 @@
                :type "audio/mpeg"}])
        "</audio>"))
 
-(defn- get-result-map [wrongs-list allcount]
-  (let [number-wrongs (count wrongs-list)
-        number-rights (- allcount number-wrongs)]
-    {:toplam-soru-sayisi allcount
-     :toplam-yanlis-sayisi number-wrongs
-     :toplam-dogru-sayisi number-rights
-     :yanlis-kelimeler (map :word wrongs-list)}))
-
 (defn do-print-results [wrongs-list allcount]
-  (let [result-map (get-result-map wrongs-list allcount)
+  (let [result-map (utils/get-result-map wrongs-list allcount)
         entries (for [x result-map] x)]
     entries))
 
@@ -42,7 +34,7 @@
    
    [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"} question-text] ]]
    [:div {:class "pure-g"}
-    [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  :width 400}]]
+    [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  }]]
     [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"} 
                           [:form {:action "/check-answer" :method "GET"}
                            (for [x options]
@@ -59,8 +51,7 @@
           [:body
 
            (print-question-form selected-card options question-text)
-           [:p
-            [:a {:href "/"} "BAŞA DÖN"]]]]))
+           ]]))
 
 (defn html-print-question [feedback c-progress c-cards selected-card options question-text]
   (str
@@ -79,7 +70,8 @@
           [:head [:title "Word maze start"]]
           [:body
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
-           [:p  [:a {:href "/start-ordered?selection=aylar-turkce"} "Yılın Ayları"]]
-           [:p  [:a {:href "/start-ordered?selection=aylar-english"} "Months of the Year"]]
-           [:p  [:a {:href "/start-ordered?selection=gunler-turkce"} "Haftanın Günleri"]]
-           [:p  [:a {:href "/start-ordered?selection=gunler-english"} "Days of the Week"]]]]))
+           [:p  [:a {:href "/ordered/start-ordered?selection=Aylar-Türkçe"} "Yılın Ayları"]]
+           [:p  [:a {:href "/ordered/start-ordered?selection=Months-English"} "Months of the Year"]]
+           [:p  [:a {:href "/ordered/start-ordered?selection=Günler-Türkçe"} "Haftanın Günleri"]]
+           [:p  [:a {:href "/ordered/start-ordered?selection=Days-English"} "Days of the Week"]]]]))
+

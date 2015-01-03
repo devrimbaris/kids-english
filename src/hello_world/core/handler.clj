@@ -7,6 +7,7 @@
             [hello-world.core.utils :as utils]
             [hello-world.core.views :as views]
             [hello-world.core.ordered-handler :as ordered]
+            [hello-world.core.handler-common :as hacommon]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]
@@ -21,15 +22,6 @@
 ;; {{:keys [answer :as params]} :form-params   {:keys [correct-answer :as session]}  :session}
 
 ;;__ routings
-(defn increase-progress []
-  (let [current-value (nses/get :c-progress)]
-    (nses/put! :c-progress (inc current-value))))
-
-(defn record-wrong [wrong-card]
-  (let [wrongs-list (nses/get :wrongs-list)
-        edited-list (remove #(= (:card-id %) (:card-id wrong-card)) wrongs-list)]
-    (nses/put! :wrongs-list (conj edited-list wrong-card))))
-
 (defn do-print-question [answer-status?]
   (let [cards-list (nses/get :cards-list)]
     (if answer-status?
@@ -78,12 +70,12 @@
                (nses/put! :cards-list (utils/remove-cards-with-id (nses/get :cards-list) ans))
                (nses/put! :feedback "BRAVO")
                (nses/put! :answer-status true)
-               (increase-progress)
+               (hacommon/increase-progress)
                (if (> (count (nses/get :cards-list)) 0)
                  (resp/redirect "/print-question")
                  (resp/redirect "/print-results")))
              (do
-               (record-wrong correct-answer)
+               (hacommon/record-wrong correct-answer)
                (nses/put! :feedback "TEKRAR DENE")
                (nses/put! :answer-status false)
                (resp/redirect "/print-question"))))))
