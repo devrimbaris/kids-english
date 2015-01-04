@@ -1,5 +1,6 @@
 (ns hello-world.core.utils
   (:require    [clojure.java.io :as io]
+               [clj-http.client :as client]
                [clojure.pprint :as pp]
                [clojure.string :as stri]))
 
@@ -10,6 +11,15 @@
 
 (defn- pad-with [s p]
   (stri/replace (format "%-5s" s) " " p))
+
+(defn get-mp3-url [word]
+  (let [query-url (str "http://dictionary.cambridge.org/dictionary/american-english/" word)
+        resp  (client/get query-url {:throw-exceptions false})]
+    (if (= 200 (:status resp))
+      (let [respbody (:body resp)
+            mp3url (second (re-find #"data-src-mp3=\"(.*mp3)" respbody))]
+        mp3url)
+      nil)))
 
 (defn create-cambridge-url [wordtext]
   "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
@@ -54,9 +64,9 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-;  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" )) 
+;  
 (defn get-cards
-  ([] (load-cards  "family")) 
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" ))  
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -119,14 +129,19 @@
          (recur (get-random-ordered-question selection) ))))))
 
 
-(get-random-ordered-question "Aylar-Türkçe" [ "Mart"]
-                             )
 
 
-;;////////////////////////////////////
-;(ordered-questions-map)
 
-;(get-random-ordered-question "Aylar-Türkçe")
+
+
+
+
+
+;; ;;////////////////////////////////////
+;; ;(ordered-questions-map)
+;; (get-random-ordered-question "Aylar-Türkçe" [ "Mart"]
+;;                              )
+;; ;(get-random-ordered-question "Aylar-Türkçe")
 
 
 ;; (format "%tF" (java.util.Date.))
@@ -139,6 +154,15 @@
 ;; (for [f  (load-cards "body-parts")] (.getName f))
 
 ;; (doseq [f  (.listFiles (io/file "resources/public/body-parts"))] (println (stri/lower-case (get-name-wtho-ext f))))
+
+
+
+
+
+
+(map get-mp3-url (map stri/lower-case (map :word (take 3 (get-cards)))))
+
+
 
 
 

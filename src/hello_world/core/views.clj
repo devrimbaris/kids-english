@@ -2,13 +2,8 @@
 ;;yanlis cevapsa alloptions kullanarak tekrar ayni cardlardla soruyu sorma
 ;;lein ring server-headless
 (ns hello-world.core.views
-  (:require [compojure.core :refer :all]
-            [compojure.route :as route]
-            [hello-world.core.utils :as utils]
+  (:require [hello-world.core.utils :as utils]
             [clojure.string :as stri]
-            [ring.util.response :as resp]
-            [ring.middleware.session :as sess]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
             [hiccup.page :refer [html5]]
             [hiccup.core :refer [html]]))
 

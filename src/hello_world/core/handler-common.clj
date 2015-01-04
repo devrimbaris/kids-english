@@ -1,9 +1,6 @@
 (ns hello-world.core.handler-common
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
-            [hello-world.core.utils :as utils]
-            [hello-world.core.views :as views]
-            [hello-world.core.ordered-handler :as ordered]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]

@@ -3,6 +3,8 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :as jty]
+            [hello-world.core.views :as views]
+            [hello-world.core.utils :as utils]
             [hello-world.core.handler :as hndlr]
             [clojure.string :as stri]
             [ring.util.response :as resp]
