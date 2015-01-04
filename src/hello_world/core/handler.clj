@@ -38,7 +38,7 @@
   (GET "/" [] ;;TODO burada once session temizlenmeli
        (do
          (nses/clear!)
-         (str (views/print-options))))
+         (str (views/print-options (utils/ordered-questions-map)))))
 
   
   (GET "/start-word-maze" [] ;;TODO burada once session temizlenmeli
@@ -58,7 +58,7 @@
 
   
   (GET "/print-results" []
-       (views/do-print-results (nses/get :wrongs-list) (nses/get :c-cards)))
+       (views/do-print-results (hacommon/get-progress)))
 
   (GET "/check-answer" [answer]
        (if (nil? answer)

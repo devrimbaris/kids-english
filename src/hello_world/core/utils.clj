@@ -108,8 +108,8 @@
                      )]
     {:missing  missing :f1  f1 :f2 f2 :options (shuffle options)}))
 
-(defn- ordered-questions-map []
-  (let [items (stri/split  (slurp "resources/public/siralamalar.txt") #"\r\n")
+(defn ordered-questions-map []
+  (let [items (stri/split  (slurp "resources/public/siralamalar.txt" :encoding "UTF-8") #"\r\n")
         parsed-items (for [i items] (stri/split i #":"))
         maps (reduce #(cons {:category (first %2) :items (vec (rest %2))}  %1) [] parsed-items)]
     maps))
@@ -120,7 +120,7 @@
          my (first (filter #(= (:category %) selection) all-ordereds))
          ordered-list (:items my)]
      (ordered-generate-missing-and-options ordered-list 4)))
-  
+
   ([selection previous-list]
    (loop [m (get-random-ordered-question selection) ]
      (let [ x (:missing m)]
@@ -130,18 +130,20 @@
 
 
 
+(ordered-generate-missing-and-options 
+ (:items (first  (filter #(= ( :category % )"﻿Aylar-Türkçe" ) (ordered-questions-map))))
+ 4)
 
 
-
-
+( get-random-ordered-question "﻿Aylar-Türkçe")
 
 
 
 ;; ;;////////////////////////////////////
-;; ;(ordered-questions-map)
-;; (get-random-ordered-question "Aylar-Türkçe" [ "Mart"]
+;; ;(selection-questions-map)
+;; (get-random-ordered-question "Aylar-TÃ¼rkÃ§e" [ "Mart"]
 ;;                              )
-;; ;(get-random-ordered-question "Aylar-Türkçe")
+;; ;(get-random-ordered-question "Aylar-TÃ¼rkÃ§e")
 
 
 ;; (format "%tF" (java.util.Date.))
@@ -160,7 +162,8 @@
 
 
 
-(map get-mp3-url (map stri/lower-case (map :word (take 3 (get-cards)))))
+;(map get-mp3-url (map stri/lower-case (map :word (take 3 (get-cards)))))
+
 
 
 

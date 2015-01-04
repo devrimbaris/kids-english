@@ -18,9 +18,8 @@
                :type "audio/mpeg"}])
        "</audio>"))
 
-(defn do-print-results [wrongs-list allcount]
-  (let [result-map (utils/get-result-map wrongs-list allcount)
-        entries (for [x result-map] x)]
+(defn do-print-results [result-map]
+  (let [entries (for [x result-map] x)]
     entries))
 
 ;;__ html page generators
@@ -57,7 +56,7 @@
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]
     (html [:p (reduce str (interpose "-" id-list))])))
 
-(defn print-options []
+(defn print-options [ordered-map]
   (html5 [:html
           [:head
            [:title "Word maze"]
@@ -65,8 +64,11 @@
           [:head [:title "Word maze start"]]
           [:body
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
-           [:p  [:a {:href "/ordered/start-ordered?selection=Aylar-Türkçe"} "Yılın Ayları"]]
-           [:p  [:a {:href "/ordered/start-ordered?selection=Months-English"} "Months of the Year"]]
-           [:p  [:a {:href "/ordered/start-ordered?selection=Günler-Türkçe"} "Haftanın Günleri"]]
-           [:p  [:a {:href "/ordered/start-ordered?selection=Days-English"} "Days of the Week"]]]]))
 
+           (for [m ordered-map] [:p [:a  {:href
+                                          (str "/ordered/start-ordered?selection=" (:category m))} (:category m)]]
+                )]]))
+
+
+
+(print-options (utils/ordered-questions-map))
