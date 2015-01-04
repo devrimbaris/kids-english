@@ -15,7 +15,7 @@
 (defn- with-page-template [f & args]
   (html5 [:html
           [:head
-           [:title "XXX"]
+           [:title "Ordered"]
            [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
           [:body (apply f args)]]))
 
