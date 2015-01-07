@@ -1,13 +1,10 @@
-;;dogru cevapsa yeni soru
-;;yanlis cevapsa alloptions kullanarak tekrar ayni cardlardla soruyu sorma
-;;lein ring server-headless
 (ns hello-world.core.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [hello-world.core.utils :as utils]
             [hello-world.core.views :as views]
-            [hello-world.core.ordered-handler :as ordered]
             [hello-world.core.handler-common :as hacommon]
+            [hello-world.core.ordered-handler :as ordered]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]

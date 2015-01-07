@@ -1,12 +1,8 @@
-;;lein ring server-headless
-(ns hello-world.core.handler
+(ns hello-world.core.startup
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :as jty]
             [hello-world.core.utils :as utils]
-            [hello-world.core.views-ordered :as vo]
-            [hello-world.core.handler-common :as hacommon]
-            [hello-world.core.ordered-handler :as ohndlr]
             [hello-world.core.handler :as hndlr]
             [clojure.string :as stri]
             [ring.util.response :as resp]

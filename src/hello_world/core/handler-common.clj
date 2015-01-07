@@ -1,24 +1,13 @@
 (ns hello-world.core.handler-common
-  (:require [compojure.core :refer :all]
-            [compojure.route :as route]
-            [clojure.string :as stri]
-            [ring.util.response :as resp]
-            [ring.middleware.session.memory :refer [memory-store]]
-            [ring.middleware.params :as prms]
-            [ring.middleware.stacktrace :as stack]
-            [noir.session :as nses]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
-            [hiccup.core :refer [html]]))
-
-
+  (:require
+   [clojure.string :as stri]
+   [noir.session :as nses]))
 
 ;;__ routings
 (defn increase-progress []
   (let [current-value (nses/get :c-progress)]
     (nses/put! :c-progress (inc current-value))
     (inc current-value)))
-
-
 
 (defn record-wrong [wrong]
   (let [wrongs-list (nses/get :wrongs-list)

@@ -11,7 +11,7 @@
             [ring.middleware.stacktrace :as stack]
             [noir.session :as nses]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
-            [hiccup.core :refer [html]]))
+))
 
 
 (defn- print-next-question [selection]

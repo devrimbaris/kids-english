@@ -21,6 +21,7 @@
         mp3url)
       nil)))
 
+
 (defn create-cambridge-url [wordtext]
   "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
   (let [t1 (str (first wordtext))
@@ -29,6 +30,9 @@
         t4 (pad-with t3 "_")
         ]
     (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
+
+
+
 
 ;;__ database
 (defn- load-cards
@@ -44,6 +48,7 @@
                                          {:card-id 1
                                           :category directory
                                           :word (stri/upper-case (get-name-wtho-ext file))
+
                                           :au-file (create-cambridge-url (get-name-wtho-ext file)  )
                                           :img-file (str directory "/" (.getName file))})]
                       vectorOfMaps)))]
@@ -64,9 +69,9 @@
     (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-;  
+;    
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health" ))  
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house"))  
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -129,22 +134,8 @@
          (recur (get-random-ordered-question selection) ))))))
 
 
-
-(ordered-generate-missing-and-options 
- (:items (first  (filter #(= ( :category % )"﻿Aylar-Türkçe" ) (ordered-questions-map))))
- 4)
-
-
-( get-random-ordered-question "﻿Aylar-Türkçe")
-
-
-
 ;; ;;////////////////////////////////////
 ;; ;(selection-questions-map)
-;; (get-random-ordered-question "Aylar-TÃ¼rkÃ§e" [ "Mart"]
-;;                              )
-;; ;(get-random-ordered-question "Aylar-TÃ¼rkÃ§e")
-
 
 ;; (format "%tF" (java.util.Date.))
 

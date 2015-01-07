@@ -1,6 +1,3 @@
-;;dogru cevapsa yeni soru
-;;yanlis cevapsa alloptions kullanarak tekrar ayni cardlardla soruyu sorma
-;;lein ring server-headless
 (ns hello-world.core.views
   (:require [hello-world.core.utils :as utils]
             [clojure.string :as stri]
@@ -25,11 +22,11 @@
 ;;__ html page generators
 (defn print-question-form [selected-card options question-text]
   (html5
-   
+
    [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"} question-text] ]]
    [:div {:class "pure-g"}
     [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  }]]
-    [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"} 
+    [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"}
                           [:form {:action "/check-answer" :method "GET"}
                            (for [x options]
                              [:p  [:input
@@ -68,7 +65,3 @@
            (for [m ordered-map] [:p [:a  {:href
                                           (str "/ordered/start-ordered?selection=" (:category m))} (:category m)]]
                 )]]))
-
-
-
-(print-options (utils/ordered-questions-map))
