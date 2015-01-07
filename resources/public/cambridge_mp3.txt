@@ -1,0 +1,3 @@
+arm|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/a/arm/arm__/arm.mp3
+back|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/b/bac/back_/back.mp3
+cheek|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/c/che/cheek/cheek.mp3
