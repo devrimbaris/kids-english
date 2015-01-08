@@ -9,8 +9,17 @@
   (let [fullname (.getName file)]
     (first (stri/split fullname #"\."))))
 
-(defn- pad-with [s p]
-  (stri/replace (format "%-5s" s) " " p))
+
+(defn- pad-left [s c length]
+  (stri/replace (format
+                 (str "%" length "s" )
+                 s) " " c))
+
+(defn- pad-right [s p length]
+  (stri/replace (format
+                 (str "%-" length "s" )
+                 s) " " p))
+
 
 (defn get-mp3-url [word]
   (let [query-url (str "http://dictionary.cambridge.org/dictionary/american-english/" word)
@@ -27,7 +36,7 @@
   (let [t1 (str (first wordtext))
         t2 (apply str (take 3 wordtext))
         t3 (apply str (take 5 wordtext))
-        t4 (pad-with t3 "_")
+        t4 (pad-right t3 "_")
         ]
     (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
 
@@ -154,7 +163,6 @@
 
 
 ;(map get-mp3-url (map stri/lower-case (map :word (take 3 (get-cards)))))
-
 
 
 
