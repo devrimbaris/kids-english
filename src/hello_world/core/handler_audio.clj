@@ -17,7 +17,7 @@
     (nses/clear!)
     (nses/put! :c-progress 1)
     (nses/put! :c-rights 0)
-    (nses/put! :total-questions 3)
+    (nses/put! :total-questions (utils/find-count-of-working-audio))
     (nses/put! :questions-asked [])
     (resp/redirect "/audio/ask-audio-question")))
 
@@ -37,15 +37,15 @@
                      (vo/print-audio-question newQuestion))))
 
             (GET "/check-answer" [answer]
-                 (let [{correct-answer :word} (nses/get :question)]
+                 (let [{{correct-answer :word}  :selected-card} (nses/get :question)]
                    (if (= answer correct-answer)
                      (do
-                       (println (str  answer ":" correct-answer))
                        (nses/put! :questions-asked (conj (nses/get :questions-asked) answer))
                        (if (< (:c-progress (hacommon/get-progress)) (nses/get :total-questions))
                          (do
                            (hacommon/increase-progress)
-                           (print-question))
+                           (nses/put! :question nil)
+                           (resp/redirect "/audio/ask-audio-question"))
                          (vo/print-report (hacommon/get-progress))))
                      (do
                        (hacommon/record-wrong correct-answer)

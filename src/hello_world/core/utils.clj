@@ -125,7 +125,7 @@ Condition function should take two arguments. The items in col-1 which satisfy t
 "Loads all card information from images directory and using this information returns a vector of maps, with each map :word, :status :url.  The url is
   parsed from each word's webpage in Cambridge dictionary."
   []
-  (when-let [cards (take 10 (get-cards))]
+  (when-let [cards (get-cards)]
     (for [c cards]
       (if-let [url (get-mp3-url (stri/lower-case (:word c)))]
         {:word (stri/lower-case (:word c)) :status "WORKING" :url url}
@@ -152,6 +152,12 @@ Condition function should take two arguments. The items in col-1 which satisfy t
        (conj m {:word word :status (keyword status) :url url}))
      [] splitted-rows)))
 
+(defn find-count-of-working-audio []
+  (count (filter #(= ( :status %) :WORKING)  (load-current-mp3-list)) )
+  )
+
+
+
 (defn get-random-audio-question-and-options
   "Loads candidate words that has audio links, removes previously asked questions and adds the options,
 returns a map."
@@ -164,10 +170,14 @@ returns a map."
         selected-card (rand-nth prev-filtered)
         options (->> all-cards
                      (remove #(= (:word selected-card) (:word %)))
+                     (shuffle)
                      (take 4)
                      (cons selected-card)
-                     (shuffle))]
+                     (shuffle)
+                     )]
     {:selected-card selected-card :options options}))
+
+(get-random-audio-question-and-options [])
 
 (defn add-mp3-links-to-cards [cards]
   (let [audio-urls (load-current-mp3-list)]

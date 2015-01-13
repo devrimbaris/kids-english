@@ -60,7 +60,7 @@
      (vo/embed-audio  mp3url)
      [:form {:action "/audio/check-answer" :method "GET"}
       (for [x options]
-        [:p  [:input {:type "radio" :name "answer" :value (:word x)} [:img {:src (str "/" (:img-file x))}]]])
+        [:p  [:input {:type "radio" :name "answer" :value (:word x)} [:img {:height "100" :src (str "/" (:img-file x))}]]])
       [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]))
 
 
