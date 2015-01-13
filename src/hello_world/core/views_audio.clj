@@ -51,7 +51,7 @@
          [:body (apply f args)]))
 
 
-(defn- get-question-text [{mp3url :url word :word}  options]
+(defn- get-question-text [{mp3url :url}  options]
   (html
    [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"}  "Duydugun kelimeyi işaretler misin?"]]]
    [:div {:class "pure-g"} [:div {:class "pure-u-1"} [:p]]]
