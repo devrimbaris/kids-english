@@ -5,6 +5,30 @@
                [clojure.string :as stri]))
 
 ;;__ utility functions
+
+(defn diff-with-f
+  "Diff of two collections based on the condition function.
+Condition function should take two arguments. The items in col-1 which satisfy the cond-f are removed iteratively."
+ [col-1 col-2 cond-f]
+ (loop [c1 col-1 c2 col-2]
+   (if-let [word (first c2)]
+     (recur 
+      (remove #(cond-f % word) c1)
+      (rest c2))
+     c1)))
+
+(defn merge-map-collections-on-key
+  "Merges detail info from second map onto first using the key as the idenfier."
+  [master detail k]
+  
+  (for [{word :word} master]
+    (let [[ p1] (filter #(= (k %) word) master)
+          [ p2] (filter #(= (k %) word) detail)]
+      (merge p1 p2)
+      ))
+  
+  )
+
 (defn get-name-wtho-ext [file]
   (let [fullname (.getName file)]
     (first (stri/split fullname #"\."))))
@@ -31,17 +55,29 @@
       nil)))
 
 
+(defn load-current-mp3-list
+  "Returns a vector of maps containing words, urls and statuses for cambridge mp3 urls by reading and parsing a words list file.
+  FILE STRUCTURE:word|status|url
+  word and url are self explaining, status is
+        WORKING for words with working mp3 links
+        DEAD for nonexistent mp3 links."
+  []
+  (let [filename "resources/public/cambridge_mp3.txt"
+        rows (clojure.string/split (slurp filename) #"\n")
+        splitted-rows (for [r rows] (clojure.string/split r #"\|"))]
+    (reduce
+     (fn [m [word status url]]
+       (conj m {:word word :status (keyword status) :url url}))
+     [] splitted-rows)))
+
 (defn create-cambridge-url [wordtext]
   "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
   (let [t1 (str (first wordtext))
         t2 (apply str (take 3 wordtext))
         t3 (apply str (take 5 wordtext))
-        t4 (pad-right t3 "_")
+        t4 (pad-right t3 "_" 5)
         ]
     (str "http://dictionary.cambridge.org/media/british/us_pron/" t1 "/" t2 "/" t4 "/" wordtext ".mp3")))
-
-
-
 
 ;;__ database
 (defn- load-cards
@@ -49,7 +85,7 @@
   files, removes directory entries, and returns a map for file, then
   assigns :card-id s incrementally."
   [& directories]
-  (let [ all-cards  
+  (let [all-cards  
         (flatten  (for [directory directories]
                     (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
                           onlyFiles (remove #(.isDirectory %) allInDir)
@@ -63,6 +99,14 @@
                       vectorOfMaps)))]
     (map #(assoc %1 :card-id (inc %2)) all-cards (range))))
 
+(defn add-mp3-links-to-cards [cards]
+  (let [audio-urls (load-current-mp3-list)]
+    (reduce
+     #(conj %1 (assoc %2 :audio-url (:url  (filter (fn [x] (= x (:word ))) audio-urls))))
+     []
+     cards)))
+
+(add-mp3-links-to-cards (load-cards "colours"))
 
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
 
@@ -80,7 +124,7 @@
 
 ;    
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house"))  
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen"))  
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
