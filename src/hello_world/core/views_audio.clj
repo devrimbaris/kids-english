@@ -50,19 +50,18 @@
           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
          [:body (apply f args)]))
 
-
+;TODO goruntu duzeltilecek
 (defn- get-question-text [{mp3url :url}  options]
   (html
    [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"}  "Duydugun kelimeyi işaretler misin?"]]]
    [:div {:class "pure-g"} [:div {:class "pure-u-1"} [:p]]]
    [:div {:class "pure-g"}
     [:div {:class "pure-u-1-3"}
-     (vo/embed-audio  {:au-file  mp3url})
-     [:div {:style "padding-top: 5px; padding-left: 35;"}
-      [:form {:action "/ordered/check-answer" :method "GET"}
-       (for [x options]
-         [:p  [:input {:type "radio" :name "answer" :value (:word x)} [:img {:src (str "/" (:img-file  x))}]]])
-       [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]]))
+     (vo/embed-audio  mp3url)
+     [:form {:action "/audio/check-answer" :method "GET"}
+      (for [x options]
+        [:p  [:input {:type "radio" :name "answer" :value (:word x)} [:img {:src (str "/" (:img-file x))}]]])
+      [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]))
 
 
 (defn print-audio-question [{selected-card :selected-card options :options} ]
@@ -76,4 +75,5 @@
   (with-page-template get-report progress)
   )
 
-(print-audio-question mmm)
+;(print-audio-question mmm)
+

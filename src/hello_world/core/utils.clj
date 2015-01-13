@@ -55,20 +55,6 @@ Condition function should take two arguments. The items in col-1 which satisfy t
       nil)))
 
 
-(defn load-current-mp3-list
-  "Returns a vector of maps containing words, urls and statuses for cambridge mp3 urls by reading and parsing a words list file.
-  FILE STRUCTURE:word|status|url
-  word and url are self explaining, status is
-        WORKING for words with working mp3 links
-        DEAD for nonexistent mp3 links."
-  []
-  (let [filename "resources/public/cambridge_mp3.txt"
-        rows (clojure.string/split (slurp filename) #"\n")
-        splitted-rows (for [r rows] (clojure.string/split r #"\|"))]
-    (reduce
-     (fn [m [word status url]]
-       (conj m {:word word :status (keyword status) :url url}))
-     [] splitted-rows)))
 
 (defn create-cambridge-url [wordtext]
   "Creates audio sample url from Cambridge, http://dictionary.cambridge.org"
@@ -92,21 +78,14 @@ Condition function should take two arguments. The items in col-1 which satisfy t
                           vectorOfMaps (for [file onlyFiles]
                                          {:card-id 1
                                           :category directory
-                                          :word (stri/upper-case (get-name-wtho-ext file))
+                                          :word (get-name-wtho-ext file)
 
                                           :au-file (create-cambridge-url (get-name-wtho-ext file)  )
                                           :img-file (str directory "/" (.getName file))})]
                       vectorOfMaps)))]
     (map #(assoc %1 :card-id (inc %2)) all-cards (range))))
 
-(defn add-mp3-links-to-cards [cards]
-  (let [audio-urls (load-current-mp3-list)]
-    (reduce
-     #(conj %1 (assoc %2 :audio-url (:url  (filter (fn [x] (= x (:word ))) audio-urls))))
-     []
-     cards)))
 
-(add-mp3-links-to-cards (load-cards "colours"))
 
 (defn find-cards-with-id [id cards] (filter #(= id (:card-id %)) cards))
 
@@ -141,6 +120,61 @@ Condition function should take two arguments. The items in col-1 which satisfy t
                         )
             ]
         [selected-card options])))
+
+(defn get-mp3-filerows-data
+"Loads all card information from images directory and using this information returns a vector of maps, with each map :word, :status :url.  The url is
+  parsed from each word's webpage in Cambridge dictionary."
+  []
+  (when-let [cards (take 10 (get-cards))]
+    (for [c cards]
+      (if-let [url (get-mp3-url (stri/lower-case (:word c)))]
+        {:word (stri/lower-case (:word c)) :status "WORKING" :url url}
+        {:word (stri/lower-case (:word c)) :status "DEAD" :url nil} ))))
+
+(defn save-mp3-links
+  "Saves mp3 links for files in text file later to be consumed by load-current-mp3-list function."
+  []
+  (spit "resources/public/cambridge_mp3.txt"
+        (reduce str (for [{x :word y :status z :url}  (get-mp3-filerows-data)] (str x "|" y "|" z "\n" )))))
+
+(defn load-current-mp3-list
+  "Returns a vector of maps containing words, urls and statuses for cambridge mp3 urls by reading and parsing a words list file.
+  FILE STRUCTURE:word|status|url
+  word and url are self explaining, status is
+        WORKING for words with working mp3 links
+        DEAD for nonexistent mp3 links."
+  []
+  (let [filename "resources/public/cambridge_mp3.txt"
+        rows (clojure.string/split (slurp filename) #"\n")
+        splitted-rows (for [r rows] (clojure.string/split r #"\|"))]
+    (reduce
+     (fn [m [word status url]]
+       (conj m {:word word :status (keyword status) :url url}))
+     [] splitted-rows)))
+
+(defn get-random-audio-question-and-options
+  "Loads candidate words that has audio links, removes previously asked questions and adds the options,
+returns a map."
+  [previous-words]
+  (let [all-cards (get-cards)
+        all-rows (load-current-mp3-list)
+        all-merged (merge-map-collections-on-key all-cards all-rows :word)
+        cards-with-good-mp3url (filter #(= :WORKING (:status %)) all-merged)
+        prev-filtered (diff-with-f cards-with-good-mp3url previous-words #(= (:word %1) %2 ))
+        selected-card (rand-nth prev-filtered)
+        options (->> all-cards
+                     (remove #(= (:word selected-card) (:word %)))
+                     (take 4)
+                     (cons selected-card)
+                     (shuffle))]
+    {:selected-card selected-card :options options}))
+
+(defn add-mp3-links-to-cards [cards]
+  (let [audio-urls (load-current-mp3-list)]
+    (reduce
+     #(conj %1 (assoc %2 :audio-url (:url  (filter (fn [x] (= x (:word ))) audio-urls))))
+     []
+     cards)))
 
 (defn find-qu-text [card]
   (let [category (:category card)]

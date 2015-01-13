@@ -1,3 +1,10 @@
-arm|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/a/arm/arm__/arm.mp3
-back|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/b/bac/back_/back.mp3
-cheek|:WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/c/che/cheek/cheek.mp3
+arm|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/a/arm/arm__/arm.mp3
+back|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/b/bac/back_/back.mp3
+cheek|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/c/che/cheek/cheek.mp3
+chin|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/c/chi/chin_/chin.mp3
+curly-hair|DEAD|
+ear|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/e/ear/ear__/ear.mp3
+elbow|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/e/elb/elbow/elbow.mp3
+eye|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/a/aye/aye__/aye.mp3
+finger|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/f/fin/finge/finger.mp3
+foot|WORKING|http://dictionary.cambridge.org/media/american-english/us_pron/f/foo/foot_/foot.mp3

@@ -6,11 +6,11 @@
 
 (deftest test-convert-to-list
   (testing "convertion to list if not"
-    (let [x (convert-to-collection 1 )]
+    (let [x (hw-utils/convert-to-collection 1 )]
       (is (= '(1)  x))))
 
   (testing "not-found route"
-    (let [response (app (mock/request :get "/invalid"))]
+    (let [response (hw-handler/app (mock/request :get "/invalid"))]
       (is (= (:status response) 404)))))
 
 (deftest test-ordered-question-generators

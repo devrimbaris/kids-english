@@ -4,7 +4,8 @@
             [hello-world.core.utils :as utils]
             [hello-world.core.views :as views]
             [hello-world.core.handler-common :as hacommon]
-            [hello-world.core.ordered-handler :as ordered]
+            [hello-world.core.handler-ordered :as ordered]
+            [hello-world.core.handler-audio :as audio]
             [clojure.string :as stri]
             [ring.util.response :as resp]
             [ring.middleware.session.memory :refer [memory-store]]
@@ -78,8 +79,10 @@
                (resp/redirect "/print-question"))))))
 
   #'ordered/ordered-routes
+  #'audio/audio-routes
+  
   (route/resources "/")
-  (route/not-found "Not Found"))
+  (route/not-found "Sayfa bulunamadı."))
 
 
 

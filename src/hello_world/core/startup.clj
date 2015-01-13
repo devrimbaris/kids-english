@@ -9,4 +9,5 @@
             [ring.middleware.session :as sess]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]))
 
-(defonce server (jty/run-jetty #'hndlr/app {:port 30000 :join? false}))
+;;(defonce server (jty/run-jetty #'hndlr/app {:port 30000 :join? false}))
+

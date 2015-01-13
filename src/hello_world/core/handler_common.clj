@@ -17,6 +17,6 @@
 (defn get-progress []
   {:c-progress (nses/get :c-progress)
    :total-questions (nses/get :total-questions )
-   :c-rights (- (nses/get :total-questions ) (count (nses/get :wrongs-list))) 
+   ;:c-rights (- (nses/get :total-questions ) (count (nses/get :wrongs-list))) 
    :wrongs-list (nses/get :wrongs-list)
    :c-wrongs (count (nses/get :wrongs-list))})

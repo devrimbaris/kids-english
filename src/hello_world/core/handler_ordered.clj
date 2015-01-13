@@ -1,4 +1,4 @@
-(ns hello-world.core.ordered-handler
+(ns hello-world.core.handler-ordered
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [hello-world.core.utils :as utils]
@@ -46,28 +46,9 @@
                        (nses/put! :questions-asked (conj (nses/get :questions-asked) answer))
                        (if (< (:c-progress (hacommon/get-progress)) (nses/get :total-questions))
                          (do
-                           (hacommon/increase-progress) 
+                           (hacommon/increase-progress)
                            (print-next-question (nses/get :selection)))
                          (vo/print-report (hacommon/get-progress))))
                      (do
                        (hacommon/record-wrong correct-answer )
                        (vo/print-ordered-question (nses/get :question)))))))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

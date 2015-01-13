@@ -6,18 +6,17 @@
 
 
 ;;usage ;   [:p (embed-audio selected-card)]
-(defn embed-audio
+(defn embed-audio [audio-url]
   "Map vasitasiyla gecilen card bilgilerine gore bir audio dosyasi linki ekler."
-  [{au-file :au-file}]
-  (str "<audio controls play autoplay>"
-       (html [ :source
-              {:src au-file
-               :type "audio/mpeg"}])
-       "</audio>"))
+  (html [:audio {:controls "controls"
+                 :autoplay "true"
+                 :src audio-url
+                 :type "audio/mpeg"} [:p]])
+  )
 
 (defn do-print-results [result-map]
   (let [entries (for [x result-map] x)]
-    entries)) 
+    entries))
 
 ;;__ html page generators
 (defn print-question-form [selected-card options question-text]
