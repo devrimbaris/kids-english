@@ -17,12 +17,11 @@
 
 (defn do-print-results [result-map]
   (let [entries (for [x result-map] x)]
-    entries))
+    entries)) 
 
 ;;__ html page generators
 (defn print-question-form [selected-card options question-text]
   (html5
-
    [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"} question-text] ]]
    [:div {:class "pure-g"}
     [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  }]]
@@ -61,6 +60,7 @@
           [:head [:title "Word maze start"]]
           [:body
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
+           [:p  [:a {:href "/audio/start-audio"} "Audio hearing"]]
 
            (for [m ordered-map] [:p [:a  {:href
                                           (str "/ordered/start-ordered?selection=" (:category m))} (:category m)]]
