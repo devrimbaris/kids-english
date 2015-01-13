@@ -4,15 +4,11 @@
    [compojure.route :as route]
    [hello-world.core.utils :as utils]
    [hello-world.core.handler-common :as hacommon]
+   [ring.util.response :as resp]
    [hello-world.core.views-audio :as vo]
    [noir.session :as nses]
    [clojure.string :as stri]))
 
-
-(defn- print-next-question []
-  (let [question (utils/get-random-audio-question-and-options (nses/get :questions-asked))]
-    (nses/put! :question question)
-    (vo/print-audio-question question)))
 
 (defn do-start-audio
   "Selection is a map with keys :missing :f1 :f2 :options"
@@ -23,7 +19,7 @@
     (nses/put! :c-rights 0)
     (nses/put! :total-questions 3)
     (nses/put! :questions-asked [])
-    (print-next-question)))
+    (resp/redirect "/audio/ask-audio-question")))
 
 
 (def  audio-routes
@@ -33,16 +29,29 @@
             (GET "/start-audio" []
                  (do-start-audio))
 
+            (GET "/ask-audio-question" []
+                 (if-let [question (nses/get :question)]
+                   (vo/print-audio-question question)
+                   (let [newQuestion (utils/get-random-audio-question-and-options (nses/get :questions-asked))]
+                     (nses/put! :question newQuestion)
+                     (vo/print-audio-question newQuestion))))
+
             (GET "/check-answer" [answer]
-                 (let [{correct-answer :audio-txt} (nses/get :question)]
+                 (let [{correct-answer :word} (nses/get :question)]
                    (if (= answer correct-answer)
                      (do
+                       (println (str  answer ":" correct-answer))
                        (nses/put! :questions-asked (conj (nses/get :questions-asked) answer))
                        (if (< (:c-progress (hacommon/get-progress)) (nses/get :total-questions))
                          (do
                            (hacommon/increase-progress)
-                           (print-next-question))
+                           (print-question))
                          (vo/print-report (hacommon/get-progress))))
                      (do
-                       (hacommon/record-wrong correct-answer )
-                       (vo/print-audio-question (nses/get :question)))))))))
+                       (hacommon/record-wrong correct-answer)
+                       (resp/redirect "/audio/ask-audio-question"))))))))
+
+
+
+
+
