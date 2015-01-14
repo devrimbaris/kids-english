@@ -58,9 +58,11 @@
    [:div {:class "pure-g"}
     [:div {:class "pure-u-1-3"}
      (vo/embed-audio  mp3url)
-     [:form {:action "/audio/check-answer" :method "GET"}
+     [:form {:action "/audio/check-answer" :method "GET" :class "pure-form"}
       (for [x options]
-        [:p  [:input {:type "radio" :name "answer" :value (:word x)} [:img {:height "100" :src (str "/" (:img-file x))}]]])
+        [:label {:for (:word x) :class "pure-radio"}
+         [:input {:type "radio"   :name "answer" :value (:word x)
+                  }  [:img {:height "95" :src (str "/" (:img-file x))}]]] )
       [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]))
 
 
