@@ -20,27 +20,28 @@
 
 ;;__ html page generators
 (defn print-question-form [selected-card options question-text]
-  (html5
-   [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"} question-text] ]]
-   [:div {:class "pure-g"}
-    [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  }]]
-    [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"}
-                          [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
-                           (for [x options]
-                             [:p  [:input
-                                   {:type "radio" :name "answer" :value (:card-id x)   :onclick "this.form.submit" :onMouseOver "style.cursor='hand'"}
-                                   (:word x)]])
-                           [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]]))
+  (html
+   [:table
+    [:tr
+     [:td question-text]]
+    [:tr
+     [:td [:img {:width "320" :src (:img-file selected-card)  }]]
+     [:td [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
+           (for [x options]
+             [:p [:label
+                  [:input {:type "radio" :style "visibility:hidden;" :name "answer" :onclick "document.getElementById('checkoo').submit();" :value (:card-id x) }]
+                  (:word x)
+                  ]])
+           ]]]]))
 
 (defn- print-question [selected-card  options question-text]
-  (html5 [:html
-          [:head
-           [:title "Word maze"]
-           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
-          [:body
+  (html [:html  [:head
+                 [:title "Word maze"]
+                 ]
+         [:body
 
-           (print-question-form selected-card options question-text)
-           ]]))
+          (print-question-form selected-card options question-text)
+          ]]))
 
 (defn html-print-question [feedback c-progress c-cards selected-card options question-text]
   (str
@@ -52,11 +53,12 @@
     (html [:p (reduce str (interpose "-" id-list))])))
 
 (defn print-options [ordered-map]
-  (html5 [:html
+  (html [:html
           [:head
            [:title "Word maze"]
-           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
-          [:head [:title "Word maze start"]]
+           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]
+]
+ 
           [:body
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
            [:p  [:a {:href "/audio/start-audio"} "Audio hearing"]]
