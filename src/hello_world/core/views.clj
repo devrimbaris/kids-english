@@ -25,10 +25,10 @@
    [:div {:class "pure-g"}
     [:div {:class "pure-u-1-3"}  [:img {:class "pure-img" :src (:img-file selected-card)  }]]
     [:div {:class "pure-u-1-3"}  [:div {:style "padding-top: 5px; padding-left: 35;"}
-                          [:form {:action "/check-answer" :method "GET"}
+                          [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
                            (for [x options]
                              [:p  [:input
-                                   {:type "radio" :name "answer" :value (:card-id x)   :onclick "this.form.submit()"}
+                                   {:type "radio" :name "answer" :value (:card-id x)   :onclick "this.form.submit" :onMouseOver "style.cursor='hand'"}
                                    (:word x)]])
                            [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]]))
 
