@@ -28,7 +28,7 @@
                           [:form {:action "/check-answer" :method "GET"}
                            (for [x options]
                              [:p  [:input
-                                   {:type "radio" :name "answer" :value (:card-id x)}
+                                   {:type "radio" :name "answer" :value (:card-id x)   :onclick "this.form.submit()"}
                                    (:word x)]])
                            [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]]))
 
