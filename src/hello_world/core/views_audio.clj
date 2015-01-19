@@ -50,21 +50,25 @@
           [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]]
          [:body (apply f args)]))
 
-;TODO goruntu duzeltilecek
-(defn- get-question-text [{mp3url :url}  options]
-  (html
-   [:b  [:div {:class "pure-g"} [:div {:class "pure-u-1"}  "Duydugun kelimeyi işaretler misin?"]]]
-   [:div {:class "pure-g"} [:div {:class "pure-u-1"} [:p]]]
-   [:div {:class "pure-g"}
-    [:div {:class "pure-u-1-3"}
-     (vo/embed-audio  mp3url)
-     [:form {:action "/audio/check-answer" :method "GET" :class "pure-form"}
-      (for [x options]
-        [:label {:for (:word x) :class "pure-radio"}
-         [:input {:type "radio"   :name "answer" :value (:word x)
-                  }  [:img {:height "95" :src (str "/" (:img-file x))}]]] )
-      [:input {:type "submit" :name "submit" :class "pure-button pure-button-primary" :value "submit"}]]]]))
 
+(defn get-question-text [{mp3url :url}  options]
+  (html
+   [:table
+    [:tr
+     [:td [:div {:style "font-size:xx-large;"} "Duydugun kelimeyi işaretler misin?"]]]
+    [:tr
+     [:td [:div {:style "font-size:xx-large;"} (vo/embed-audio  mp3url)]]]]
+   [:table 
+    [:tr  [:td  [:form {:action "/audio/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
+                 (for [x options]
+                   [:td {:style "padding:20px 10px 10px 20px;"} [:label {:style "font-size:xx-large;"}
+                                                                 [:input {:type "radio" :style "visibility:hidden;" :name "answer" :onclick "document.getElementById('checkoo').submit();" :value (:word x) }]
+                                                                 [:img {:width  "120" :src (str "/" (:img-file x))}]
+                                                                 ]])
+                 ]
+           
+
+           ]]]))
 
 (defn print-audio-question [{selected-card :selected-card options :options} ]
   (with-page-template get-question-text selected-card options)
