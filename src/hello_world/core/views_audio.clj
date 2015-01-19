@@ -61,7 +61,7 @@
    [:table 
     [:tr  [:td  [:form {:action "/audio/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
                  (for [x options]
-                   [:td {:style "padding:20px 10px 10px 20px;"} [:label {:style "font-size:xx-large;"}
+                   [:td {:style "padding:20px 20px 20px 20px;"} [:label {:style "font-size:xx-large;"}
                                                                  [:input {:type "radio" :style "visibility:hidden;" :name "answer" :onclick "document.getElementById('checkoo').submit();" :value (:word x) }]
                                                                  [:img {:width  "120" :src (str "/" (:img-file x))}]
                                                                  ]])

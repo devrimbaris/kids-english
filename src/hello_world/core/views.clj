@@ -25,7 +25,7 @@
     [:tr
      [:td [:div {:style "font-size:xx-large;"} question-text]]]
     [:tr
-     [:td {:valign "top"} [:img {:width "320" :src (:img-file selected-card)  }]]
+     [:td {:valign "top"} [:img {:width "360" :src (:img-file selected-card)  }]]
      [:td {:valign "top"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
               (for [x options]
                 [:p {:style "padding:20px 10px 10px 20px;"} [:label {:style "font-size:xx-large;"}
@@ -59,10 +59,11 @@
            [:link {:rel "stylesheet" :href "http://yui.yahooapis.com/pure/0.5.0/pure-min.css"}]
 ]
  
-          [:body
+         [:body
+          [:div {:style "font-size:xx-large;"} 
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
            [:p  [:a {:href "/audio/start-audio"} "Audio hearing"]]
 
            (for [m ordered-map] [:p [:a  {:href
                                           (str "/ordered/start-ordered?selection=" (:category m))} (:category m)]]
-                )]]))
+                )]]]))
