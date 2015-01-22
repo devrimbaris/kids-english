@@ -20,7 +20,7 @@
 
 (get-image-size "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg")
 
-(defn slice-image [imgsize_x imgsize_y count_x count_y ]
+(defn slice-image [imgsize_x imgsize_y count_x count_y scale_x scale_y]
   (let [
         x-box (quot imgsize_x count_x)
         y-box (quot imgsize_y count_y)
@@ -28,25 +28,36 @@
         y-cords (range 0 imgsize_y y-box)
         cartesians
         (for [x x-cords y y-cords] {:x0 x :y0 y :x1 (min imgsize_x (+ x x-box)) :y1 (min imgsize_y (+ y y-box))})
-        c-withid (map #(assoc %1 :id %2) cartesians (range))
-        clips (for [m c-withid] (dissoc (assoc m
-                                          :size-x (- (:x1 m) (:x0 m))
-                                          :size-y (- (:y1 m) (:y0 m)) )   :x1 :y1))]
+        scaled (for [m cartesians] (assoc m
+                                     :x0-scl (* (:x0 m) scale_x)
+                                     :x1-scl (* (:x1 m) scale_x)
+                                     :y0-scl (* (:y0 m) scale_y)
+                                     :y1-scl (* (:y1 m) scale_y)
+                                     )
+                    ) 
+        c-withid (map #(assoc %1 :id %2) scaled (range))
+        clips (for [m c-withid] (assoc m
+                                  :size-x (- (:x1 m) (:x0 m))
+                                  :size-x-scl (- (:x1-scl m) (:x0-scl m))
+                                  :size-y-scl (- (:y1-scl m) (:y0-scl m))
+                                  :size-y (- (:y1 m) (:y0 m)) ))]
     clips
     ))
 
+(slice-image 35 32 3 2 0.5 0.5)
+
 (defn get-slice-js [imgUrl]
   (let [[imgX imgY] (get-image-size imgUrl)
-        slices (slice-image imgX imgY 10 10)]
+        slices (slice-image imgX imgY 10 10 0.1 0.1)]
     (stri/join (for [clip slices] (str "canvas_context.drawImage(img,"
                                        (:x0 clip) ","
                                        (:y0 clip) ","
                                        (:size-x clip) ","
                                        (:size-y clip) ","
-                                       (:x0 clip) ","
-                                       (:y0 clip) ","
-                                       (:size-x clip) ","
-                                       (:size-y clip) 
+                                       (:x0-scl clip) ","
+                                       (:y0-scl clip) ","
+                                       (:size-x-scl clip) ","
+                                       (:size-y-scl clip) 
                                        ");"))))
   )
 
@@ -66,7 +77,7 @@
           [:section  {:style "border-style: solid; border-width: 2px; width: 600px;"}
            [:canvas {:width 600 :height 400 :ID "canvas_1"} "Canvas tag not supported"]]
           [:p [:input {:type "Button" :value "Draw" :onClick "drawOnCanvas()"}]]
-          [:p [:img {:src imgUrl :ID "london_eye" :width 600 :height 400}]]
+          [:p [:img {:src imgUrl :ID "london_eye" }]]
           ))
 
 
