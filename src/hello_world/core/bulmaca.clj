@@ -11,21 +11,18 @@
 (import 'java.io.FileInputStream)
 (import 'javax.imageio.ImageIO)
 
+(defn get-image-size [query-url]
+  (with-open [in (io/input-stream query-url)]
+    (let [img  (ImageIO/read in)]
+      [ (.getWidth img) (.getHeight img)])
+    )
+  )
 
-(defn get-image-size []
-  (let [query-url "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"]
-    (with-open [in (io/input-stream query-url)]
-      (let [img  (ImageIO/read in)]
-        [ (.getWidth img) (.getHeight img)])
-      )
-    ))
+(get-image-size "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg")
 
-(get-image-size
- )
-
-
-(defn slice-image [imgsize_x imgsize_y count_x count_y]
-  (let [x-box (quot imgsize_x count_x)
+(defn slice-image [imgsize_x imgsize_y count_x count_y ]
+  (let [
+        x-box (quot imgsize_x count_x)
         y-box (quot imgsize_y count_y)
         x-cords (range 0 imgsize_x x-box )
         y-cords (range 0 imgsize_y y-box)
@@ -33,27 +30,29 @@
         (for [x x-cords y y-cords] {:x0 x :y0 y :x1 (min imgsize_x (+ x x-box)) :y1 (min imgsize_y (+ y y-box))})
         c-withid (map #(assoc %1 :id %2) cartesians (range))
         clips (for [m c-withid] (dissoc (assoc m
-                                            :size-x (- (:x1 m) (:x0 m))
-                                            :size-y (- (:y1 m) (:y0 m)) )   :x1 :y1))
-        filtered clips]
-    
-    (stri/join (for [clip filtered ] (str "canvas_context.drawImage(img,"
-                                (:x0 clip) ","
-                                (:y0 clip) ","
-                                (:size-x clip) ","
-                                (:size-y clip) ","
-                                (:x0 clip) ","
-                                (:y0 clip) ","
-                                (:size-x clip) ","
-                                (:size-y clip) 
-                                
-
-                                ");")))
-
+                                          :size-x (- (:x1 m) (:x0 m))
+                                          :size-y (- (:y1 m) (:y0 m)) )   :x1 :y1))]
+    clips
     ))
 
+(defn get-slice-js [imgUrl]
+  (let [[imgX imgY] (get-image-size imgUrl)
+        slices (slice-image imgX imgY 10 10)]
+    (stri/join (for [clip slices] (str "canvas_context.drawImage(img,"
+                                       (:x0 clip) ","
+                                       (:y0 clip) ","
+                                       (:size-x clip) ","
+                                       (:size-y clip) ","
+                                       (:x0 clip) ","
+                                       (:y0 clip) ","
+                                       (:size-x clip) ","
+                                       (:size-y clip) 
+                                       ");"))))
+  )
+
 (defn deneme []
-  (html [:script (str "function drawOnCanvas() {
+  (let [imgUrl "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"]
+    (html [:script (str "function drawOnCanvas() {
 
     var canvas = document.getElementById(\"canvas_1\");""
 
@@ -61,14 +60,14 @@
 
         var canvas_context = canvas.getContext(\"2d\");""
         var img = document.getElementById(\"london_eye\");"
-        (slice-image 500 324 20 20)
+        (get-slice-js imgUrl)
 
-    "} }")]
-        [:section  {:style "border-style: solid; border-width: 2px; width: 600px;"}
-         [:canvas {:width 600 :height 400 :ID "canvas_1"} "Canvas tag not supported"]]
-        [:p [:input {:type "Button" :value "Draw" :onClick "drawOnCanvas()"}]]
-        [:p [:img {:src "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" :ID "london_eye"}]]
-        )
+        "} }")]
+          [:section  {:style "border-style: solid; border-width: 2px; width: 600px;"}
+           [:canvas {:width 600 :height 400 :ID "canvas_1"} "Canvas tag not supported"]]
+          [:p [:input {:type "Button" :value "Draw" :onClick "drawOnCanvas()"}]]
+          [:p [:img {:src imgUrl :ID "london_eye" :width 600 :height 400}]]
+          ))
 
 
   )
