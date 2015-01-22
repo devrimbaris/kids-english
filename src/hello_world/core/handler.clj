@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [hello-world.core.utils :as utils]
             [hello-world.core.views :as views]
+            [hello-world.core.bulmaca :as bulmaca]
             [hello-world.core.handler-common :as hacommon]
             [hello-world.core.handler-ordered :as ordered]
             [hello-world.core.handler-audio :as audio]
@@ -37,6 +38,12 @@
        (do
          (nses/clear!)
          (str (views/print-options (utils/ordered-questions-map)))))
+
+  (GET "/bulmaca" [] ;;TODO burada once session temizlenmeli
+       (do
+         
+
+         (bulmaca/deneme)))
 
   
   (GET "/start-word-maze" [] ;;TODO burada once session temizlenmeli

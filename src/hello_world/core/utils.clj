@@ -8,7 +8,18 @@
 
 (defn diff-with-f
   "Diff of two collections based on the condition function.
-Condition function should take two arguments. The items in col-1 which satisfy the cond-f are removed iteratively."
+Condition function should take two arguments. The items in col-1 which satisfy the cond-f are removed iteratively.
+
+Example: 
+(def x [ 1 2 3 4 5 6 7 8 9])
+(def s [3 4 5])
+(diff-with-f x s #(= %1 %2)) ----> (1 2 6 7 8 9)
+
+For equality, also this can be used with the above data;
+(remove
+ #(some (fn [a] (= a %1)) s)
+ x)
+"
  [col-1 col-2 cond-f]
  (loop [c1 col-1 c2 col-2]
    (if-let [word (first c2)]
@@ -16,6 +27,11 @@ Condition function should take two arguments. The items in col-1 which satisfy t
       (remove #(cond-f % word) c1)
       (rest c2))
      c1)))
+
+
+
+
+
 
 (defn merge-map-collections-on-key
   "Merges detail info from second map onto first using the key as the idenfier."

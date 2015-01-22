@@ -60,7 +60,8 @@
 ]
  
          [:body
-          [:div {:style "font-size:xx-large;"} 
+          [:div {:style "font-size:xx-large;"}
+           [:p [:a {:href "/bulmaca"} "Bulmaca"]  ]
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
            [:p  [:a {:href "/audio/start-audio"} "Audio hearing"]]
 

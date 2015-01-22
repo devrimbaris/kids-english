@@ -40,15 +40,16 @@
                                   :size-x (- (:x1 m) (:x0 m))
                                   :size-x-scl (- (:x1-scl m) (:x0-scl m))
                                   :size-y-scl (- (:y1-scl m) (:y0-scl m))
-                                  :size-y (- (:y1 m) (:y0 m)) ))]
-    clips
+                                  :size-y (- (:y1 m) (:y0 m)) ))
+        filtered (remove #(> (:id %) 30) clips)]
+    filtered
     ))
 
 (slice-image 35 32 3 2 0.5 0.5)
 
 (defn get-slice-js [imgUrl]
   (let [[imgX imgY] (get-image-size imgUrl)
-        slices (slice-image imgX imgY 10 10 0.1 0.1)]
+        slices (slice-image imgX imgY 10 10 0.25 0.25)]
     (stri/join (for [clip slices] (str "canvas_context.drawImage(img,"
                                        (:x0 clip) ","
                                        (:y0 clip) ","
@@ -77,7 +78,7 @@
           [:section  {:style "border-style: solid; border-width: 2px; width: 600px;"}
            [:canvas {:width 600 :height 400 :ID "canvas_1"} "Canvas tag not supported"]]
           [:p [:input {:type "Button" :value "Draw" :onClick "drawOnCanvas()"}]]
-          [:p [:img {:src imgUrl :ID "london_eye" }]]
+          [:p [:img {:src imgUrl :ID "london_eye" :style "visibility: hidden;" }]]
           ))
 
 
@@ -86,6 +87,7 @@
 
 
 (deneme)
+
 
 
 
