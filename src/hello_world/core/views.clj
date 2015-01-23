@@ -24,10 +24,10 @@
   (html
    [:table
     [:tr
-     [:td [:div {:style "font-size:xx-large;"} question-text]]]
+     [:td [:div { :style "font-size:xx-large;"} question-text]]]
     [:tr
-     [:td {:valign "top"} [:img {:width "360" :src (:img-file selected-card)  }]]
-     [:td {:valign "top"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
+     [:td {:valign "top" :width "20%"} [:img {:width "360" :src (:img-file selected-card)  }]]
+     [:td {:valign "top" :width "30%"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
                            (for [x options]
                              [:p {:style "padding:20px 10px 10px 20px;"}
                               [:label {:style "font-size:xx-large;"}
@@ -38,7 +38,7 @@
                                         :value (:card-id x)}]
                                (:word x)]])]]
      
-     [:td {:valign "top"} [:canvas {:width 600 :height 400 :ID "canvas"} "Canvas tag not supported"]] ]]))
+     [:td {:valign "top" :width "50%"} [:canvas {:width 600 :height 600 :ID "canvas"} "Canvas tag not supported"]] ]]))
 
 (defn- print-question [selected-card  options question-text {imgURL :imgURL slices :slices shown-slice-ids :shown-ids}]
   (html [:html
