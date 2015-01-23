@@ -1,5 +1,6 @@
 (ns hello-world.core.views
   (:require [hello-world.core.utils :as utils]
+            [hello-world.core.bulmaca :as bulmaca]
             [clojure.string :as stri]
             [hiccup.page :refer [html5]]
             [hiccup.core :refer [html]]))
@@ -19,7 +20,7 @@
     entries))
 
 ;;__ html page generators
-(defn print-question-form [selected-card options question-text]
+(defn print-question-form [selected-card options question-text ]
   (html
    [:table
     [:tr
@@ -36,21 +37,21 @@
                                         :onclick "document.getElementById('checkoo').submit();"
                                         :value (:card-id x)}]
                                (:word x)]])]]
-     [:td {:valign "top"} "puzzle"] ]]))
+     
+     [:td {:valign "top"} [:canvas {:width 600 :height 400 :ID "canvas"} "Canvas tag not supported"]] ]]))
 
-(defn- print-question [selected-card  options question-text]
-  (html [:html  [:head
-                 [:title "Word maze"]
-                 ]
-         [:body
-
+(defn- print-question [selected-card  options question-text {imgURL :imgURL slices :slices shown-slice-ids :shown-ids}]
+  (html [:html
+         [:script (bulmaca/get-slice-js imgURL slices shown-slice-ids)]
+         [:head [:title "Word maze"]]
+         [:body {:onLoad "drawImage()"}
           (print-question-form selected-card options question-text)
           ]]))
 
-(defn html-print-question [feedback c-progress c-cards selected-card options question-text]
+(defn html-print-question [feedback c-progress c-cards selected-card options question-text puzzle-data-map]
   (str
    (html [:p  (str  feedback  "     (" c-progress " / " c-cards ")")])
-       (print-question selected-card options question-text)))
+   (print-question selected-card options question-text puzzle-data-map)))
 
 (defn print-remaining-cards [rem-cards]
   (let [id-list (utils/find-all-values-in-map-with-key :card-id rem-cards)]

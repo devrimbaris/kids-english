@@ -27,10 +27,10 @@
       (let [[selected-card options] (utils/get-card-and-options cards-list 5 )]
         (nses/put! :correct-answer selected-card)
         (nses/put! :options options)
-        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card)))
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card) (nses/get :puzzle-data)    ))
       (let [selected-card (nses/get :correct-answer)
             options (nses/get :options)]
-        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card))))))
+        (views/html-print-question (nses/get :feedback) (nses/get :c-progress) (nses/get :c-cards)  selected-card options (utils/find-qu-text selected-card) (nses/get :puzzle-data)  )))))
 
 (defroutes app-routes
 
@@ -76,6 +76,7 @@
                (nses/put! :feedback "BRAVO")
                (nses/put! :answer-status true)
                (hacommon/increase-progress)
+               (nses/put! :puzzle-data (bulmaca/increase-progress (nses/get :puzzle-data)))
                (if (> (count (nses/get :cards-list)) 0)
                  (resp/redirect "/print-question")
                  (resp/redirect "/print-results")))

@@ -28,8 +28,7 @@ img.src='{imgURL}';}")
   )
 
 (defn slice-image [imgsize_x imgsize_y count_x count_y scale_x scale_y]
-  (let [
-        x-box (quot imgsize_x count_x)
+  (let [x-box (quot imgsize_x count_x)
         y-box (quot imgsize_y count_y)
         x-cords (range 0 imgsize_x x-box )
         y-cords (range 0 imgsize_y y-box)
@@ -88,12 +87,20 @@ img.src='{imgURL}';}")
 (defn generate-puzzle-data []
   (let [imgUrl (generate-random-imgUrl)
         [imageX imageY] (get-image-size imgUrl)
-        slices (slice-image imageX imageY 5 5 0.2 0.2)]
+        slices (slice-image imageX imageY 10 10 0.2 0.2)
+        count-slices (count slices)]
     {:imgURL imgUrl
-     :clip-count (count slices)
+     :clip-count count-slices
      :slices slices
-     :shown-ids [1 2 3 4 5]
+     :shown-ids (range 0 count-slices)
      }))
+
+(defn increase-progress [{imgURL :imgURL  clip-count :clip-count slices :slices shown-ids :shown-ids }]
+  (let [r (rand-nth shown-ids)
+        new-shown-ids (remove #(= r %) shown-ids)
+        ]
+    {:imgURL imgURL :clip-count clip-count :slices slices :shown-ids new-shown-ids})
+  )
 
 ;; (generate-puzzle-data)
 
