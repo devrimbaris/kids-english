@@ -38,7 +38,7 @@
                                         :value (:card-id x)}]
                                (:word x)]])]]
      
-     [:td {:valign "top" :width "50%"} [:canvas {:width 600 :height 600 :ID "canvas"} "Canvas tag not supported"]] ]]))
+     [:td {:valign "top" :width "50%"} [:canvas {:style "border:1px solid red;" :width 600 :height 500 :ID "canvas"} "Canvas tag not supported"]] ]]))
 
 (defn- print-question [selected-card  options question-text {imgURL :imgURL slices :slices shown-slice-ids :shown-ids}]
   (html [:html
@@ -66,7 +66,6 @@
  
          [:body
           [:div {:style "font-size:xx-large;"}
-           [:p [:a {:href "/bulmaca"} "Bulmaca"]  ]
            [:p  [:a {:href "/start-word-maze"} "Word Tree Cards"]]
            [:p  [:a {:href "/audio/start-audio"} "Audio hearing"]]
 

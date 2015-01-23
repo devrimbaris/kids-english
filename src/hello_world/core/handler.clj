@@ -39,12 +39,6 @@
          (nses/clear!)
          (str (views/print-options (utils/ordered-questions-map)))))
 
-  (GET "/bulmaca" [] ;;TODO burada once session temizlenmeli
-       (do
-         (nses/clear!)
-         (bulmaca/deneme (bulmaca/generate-puzzle-data) [])))
-
-  
   (GET "/start-word-maze" [] ;;TODO burada once session temizlenmeli
        (let [all-cards (utils/get-cards)]
          (nses/clear!)

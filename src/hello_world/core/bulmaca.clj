@@ -11,6 +11,9 @@
 (import 'java.io.FileInputStream)
 (import 'javax.imageio.ImageIO)
 
+(def canvas-x-size 600)
+(def canvas-y-size 500)
+
 (def jstemplate "
 function drawImage(){
 var canvas=document.getElementById('canvas'); 
@@ -20,10 +23,15 @@ img.onload=function(){
 {slicejs} } 
 img.src='{imgURL}';}")
 
-(defn get-image-size [query-url]
+(defn calculate-image-sizing [query-url canvas-x canvas-y]
   (with-open [in (io/input-stream query-url)]
-    (let [img  (ImageIO/read in)]
-      [ (.getWidth img) (.getHeight img)])
+    (let [img  (ImageIO/read in)
+          width (.getWidth img)
+          height (.getHeight img)
+          scale_x (/ canvas-x width)
+          scale_y (/ canvas-y height)
+          ]
+      [width height scale_x scale_y  ])
     )
   )
 
@@ -52,7 +60,7 @@ img.src='{imgURL}';}")
 
 (defn get-slice-js
   ([imgURL]
-   (let [[imgX imgY] (get-image-size imgURL)
+   (let [[imgX imgY scale_x scale_y] (calculate-image-sizing imgURL)
          slices (slice-image imgX imgY 1 1 0.25 0.25)]
      (get-slice-js imgURL slices [])))
   ([imgURL slices shown-slice-ids]
@@ -73,33 +81,28 @@ img.src='{imgURL}';}")
      (utils/replace-template jstemplate {:imgURL imgURL :slicejs draw-js }))))
 
 (defn generate-random-imgUrl []
-  "http://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg")
-
-(defn deneme [{imgURL :imgURL slices :slices} shown-slice-ids]
-  (html [:html 
-         [:script (get-slice-js imgURL slices shown-slice-ids)]
-         [:body {:onLoad "drawImage()"}
-          [:section  {:style "border-style: solid; border-width: 2px; width: 600px;"}
-           [:canvas {:width 600 :height 400 :ID "canvas"} "Canvas tag not supported"]]
-          ]]
-        ))
+  (let [rows (stri/split (slurp "resources/public/bulmaca.txt") #"\r\n")]
+    (rand-nth rows)))
 
 (defn generate-puzzle-data []
   (let [imgUrl (generate-random-imgUrl)
-        [imageX imageY] (get-image-size imgUrl)
-        slices (slice-image imageX imageY 10 10 0.2 0.2)
+        [imageX imageY scale_x scale_y] (calculate-image-sizing imgUrl canvas-x-size canvas-y-size)
+        slices (slice-image imageX imageY 2 2 scale_x scale_y)
         count-slices (count slices)]
     {:imgURL imgUrl
      :clip-count count-slices
      :slices slices
      :shown-ids (range 0 count-slices)
      }))
+(generate-puzzle-data)
 
-(defn increase-progress [{imgURL :imgURL  clip-count :clip-count slices :slices shown-ids :shown-ids }]
-  (let [r (rand-nth shown-ids)
-        new-shown-ids (remove #(= r %) shown-ids)
-        ]
-    {:imgURL imgURL :clip-count clip-count :slices slices :shown-ids new-shown-ids})
+(defn increase-progress [{imgURL :imgURL  clip-count :clip-count slices :slices shown-ids :shown-ids :as all}]
+  (if (> (count shown-ids) 0)
+    (let [r (rand-nth shown-ids)
+          new-shown-ids (remove #(= r %) shown-ids)
+          ]
+      {:imgURL imgURL :clip-count clip-count :slices slices :shown-ids new-shown-ids})
+    all)
   )
 
 ;; (generate-puzzle-data)
