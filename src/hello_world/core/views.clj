@@ -27,12 +27,16 @@
     [:tr
      [:td {:valign "top"} [:img {:width "360" :src (:img-file selected-card)  }]]
      [:td {:valign "top"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
-              (for [x options]
-                [:p {:style "padding:20px 10px 10px 20px;"} [:label {:style "font-size:xx-large;"}
-                        [:input {:type "radio" :style "visibility:hidden;" :name "answer" :onclick "document.getElementById('checkoo').submit();" :value (:card-id x) }]
-                        (:word x)
-                        ]])
-              ]]]]))
+                           (for [x options]
+                             [:p {:style "padding:20px 10px 10px 20px;"}
+                              [:label {:style "font-size:xx-large;"}
+                               [:input {:type "radio"
+                                        :style "visibility:hidden;"
+                                        :name "answer"
+                                        :onclick "document.getElementById('checkoo').submit();"
+                                        :value (:card-id x)}]
+                               (:word x)]])]]
+     [:td {:valign "top"} "puzzle"] ]]))
 
 (defn- print-question [selected-card  options question-text]
   (html [:html  [:head

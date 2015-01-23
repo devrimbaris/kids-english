@@ -28,9 +28,9 @@ For equality, also this can be used with the above data;
       (rest c2))
      c1)))
 
-
-
-
+(defn replace-template [text m] 
+      (clojure.string/replace text #"\{\w+\}" 
+                              (comp m keyword clojure.string/join butlast rest)))
 
 
 (defn merge-map-collections-on-key

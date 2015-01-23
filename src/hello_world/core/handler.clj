@@ -41,9 +41,8 @@
 
   (GET "/bulmaca" [] ;;TODO burada once session temizlenmeli
        (do
-         
-
-         (bulmaca/deneme)))
+         (nses/clear!)
+         (bulmaca/deneme (bulmaca/generate-puzzle-data) [])))
 
   
   (GET "/start-word-maze" [] ;;TODO burada once session temizlenmeli
@@ -55,6 +54,7 @@
          (nses/put! :c-cards (count all-cards))
          (nses/put! :c-progress 1)
          (nses/put! :answer-status true)
+         (nses/put! :puzzle-data (bulmaca/generate-puzzle-data))
          (resp/redirect "/print-question")))
 
   (GET "/print-question" []
