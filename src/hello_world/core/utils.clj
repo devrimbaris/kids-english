@@ -153,6 +153,7 @@ For equality, also this can be used with the above data;
   (spit "resources/public/cambridge_mp3.txt"
         (reduce str (for [{x :word y :status z :url}  (get-mp3-filerows-data)] (str x "|" y "|" z "\n" )))))
 
+
 (defn load-current-mp3-list
   "Returns a vector of maps containing words, urls and statuses for cambridge mp3 urls by reading and parsing a words list file.
   FILE STRUCTURE:word|status|url

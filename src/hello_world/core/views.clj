@@ -22,23 +22,23 @@
 ;;__ html page generators
 (defn print-question-form [selected-card options question-text ]
   (html
-   [:table
+   [:table {:border "1"}
     [:tr
-     [:td [:div { :style "font-size:xx-large;"} question-text]]]
+     [:td {:colspan "3"} [:div { :style "font-size:xx-large;" } question-text]]]
     [:tr
-     [:td {:valign "top" :width "20%"} [:img {:width "360" :src (:img-file selected-card)  }]]
-     [:td {:valign "top" :width "30%"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
-                           (for [x options]
-                             [:p {:style "padding:20px 10px 10px 20px;"}
-                              [:label {:style "font-size:xx-large;"}
-                               [:input {:type "radio"
-                                        :style "visibility:hidden;"
-                                        :name "answer"
-                                        :onclick "document.getElementById('checkoo').submit();"
-                                        :value (:card-id x)}]
-                               (:word x)]])]]
+     [:td {:valign "top" } [:img {:width "320" :src (:img-file selected-card)  }]]
+     [:td {:valign "top"} [:div {:style "font-size:xx-large; width: 180px; word-wrap: break-word"} [:form {:action "/check-answer" :method "GET" :id "checkoo" :name "checkoo"}
+                                    (for [x options]
+                                      [:p {:style "padding:7px 7px 7px 7px;"}
+                                       [:label
+                                        [:input {:type "radio"
+                                                 :style "visibility:hidden;"
+                                                 :name "answer"
+                                                 :onclick "document.getElementById('checkoo').submit();"
+                                                 :value (:card-id x)}]
+                                        (:word x)]])]]]
      
-     [:td {:valign "top" :width "50%"} [:canvas {:style "border:1px solid red;" :width 600 :height 500 :ID "canvas"} "Canvas tag not supported"]] ]]))
+     [:td {:valign "top" } [:canvas {:style "border:1px solid red;" :width 550 :height 420 :ID "canvas"} "Canvas tag not supported"]] ]]))
 
 (defn- print-question [selected-card  options question-text {imgURL :imgURL slices :slices shown-slice-ids :shown-ids}]
   (html [:html

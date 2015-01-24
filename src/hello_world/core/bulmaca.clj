@@ -11,8 +11,8 @@
 (import 'java.io.FileInputStream)
 (import 'javax.imageio.ImageIO)
 
-(def canvas-x-size 600)
-(def canvas-y-size 500)
+(def canvas-x-size 550)
+(def canvas-y-size 420)
 
 (def jstemplate "
 function drawImage(){
@@ -87,7 +87,7 @@ img.src='{imgURL}';}")
 (defn generate-puzzle-data []
   (let [imgUrl (generate-random-imgUrl)
         [imageX imageY scale_x scale_y] (calculate-image-sizing imgUrl canvas-x-size canvas-y-size)
-        slices (slice-image imageX imageY 2 2 scale_x scale_y)
+        slices (slice-image imageX imageY 10 10 scale_x scale_y)
         count-slices (count slices)]
     {:imgURL imgUrl
      :clip-count count-slices
