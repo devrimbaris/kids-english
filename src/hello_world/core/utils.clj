@@ -119,7 +119,7 @@ For equality, also this can be used with the above data;
 
 ;    
 (defn get-cards
-  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen"))  
+  ([] (load-cards "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen" "verbs"))  
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -211,6 +211,7 @@ returns a map."
       "geometry" "What shape is it?"
       "weather"  "How is the weather like today?"
       "health" "How is he?"
+      "verbs" "What is he doing?"
       "What is it?")))
 
 (defn ordered-generate-missing-and-options [ordered-list options-count]
