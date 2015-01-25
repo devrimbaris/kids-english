@@ -212,6 +212,7 @@ returns a map."
       "weather"  "How is the weather like today?"
       "health" "How is he?"
       "verbs" "What is he doing?"
+      "prepositions" "Where is the ball?"
       "What is it?")))
 
 (defn ordered-generate-missing-and-options [ordered-list options-count]
