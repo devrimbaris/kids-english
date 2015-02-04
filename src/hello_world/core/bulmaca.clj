@@ -81,8 +81,10 @@ img.src='{imgURL}';}")
      (utils/replace-template jstemplate {:imgURL imgURL :slicejs draw-js }))))
 
 (defn generate-random-imgUrl []
-  (let [rows (stri/split (slurp "resources/public/bulmaca.txt") #"\r\n")]
+  (let [rows (stri/split
+              (:body  (client/get  "https://raw.githubusercontent.com/devrimbaris/hello-world/master/resources/public/bulmaca.txt")) #"\r\n")]
     (rand-nth rows)))
+
 
 (defn generate-puzzle-data []
   (let [imgUrl (generate-random-imgUrl)
@@ -104,6 +106,10 @@ img.src='{imgURL}';}")
       {:imgURL imgURL :clip-count clip-count :slices slices :shown-ids new-shown-ids})
     all)
   )
+
+
+(client/get
+ "")
 
 ;; (generate-puzzle-data)
 
