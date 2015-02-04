@@ -194,8 +194,6 @@ returns a map."
                      )]
     {:selected-card selected-card :options options}))
 
-(get-random-audio-question-and-options [])
-
 (defn add-mp3-links-to-cards [cards]
   (let [audio-urls (load-current-mp3-list)]
     (reduce

@@ -94,7 +94,7 @@ img.src='{imgURL}';}")
      :slices slices
      :shown-ids (range 0 count-slices)
      }))
-(generate-puzzle-data)
+
 
 (defn increase-progress [{imgURL :imgURL  clip-count :clip-count slices :slices shown-ids :shown-ids :as all}]
   (if (> (count shown-ids) 0)
