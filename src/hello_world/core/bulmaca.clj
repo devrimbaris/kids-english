@@ -108,9 +108,6 @@ img.src='{imgURL}';}")
   )
 
 
-(client/get
- "")
-
 ;; (generate-puzzle-data)
 
 ;; (deneme (generate-puzzle-data) [])

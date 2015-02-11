@@ -248,6 +248,22 @@ returns a map."
          (recur (get-random-ordered-question selection) ))))))
 
 
+
+
+
+(client/post "https://stream.twitter.com/1.1/statuses/filter.json"
+             {:client-params {
+                              "track" "twitter"
+                              "Authorization" "OAuth"
+                              "oauth_consumer_key" "UdTQk86fVvOK1PECeD1ZubkJ9"
+                              "oauth_nonce=" "286295c4c09f35a9334e7dd4e215057e"
+                              "oauth_signature=" "Y%2BOxAQw8uDQrfWTPDIwsIbypob8%3D"
+                              "oauth_signature_method=" "HMAC-SHA1"
+                              "oauth_timestamp=" "1423260084"
+                              "oauth_token=" "158678545-cvKJS6Q4UQxmJfBQc6X1wnFaNCyDUjDGiEOmBTXb"
+                              "oauth_version=" "1.0"
+                              "http.protocol.allow-circular-redirects" false
+                              "http.useragent" "clj-http"}})
 ;; ;;////////////////////////////////////
 ;; ;(selection-questions-map)
 
