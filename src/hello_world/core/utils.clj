@@ -3,14 +3,11 @@
                [clj-http.client :as client]
                [clojure.pprint :as pp]
                [clojure.string :as stri]))
-
-;;__ utility functions
-
 (defn diff-with-f
   "Diff of two collections based on the condition function.
 Condition function should take two arguments. The items in col-1 which satisfy the cond-f are removed iteratively.
 
-Example: 
+Example:
 (def x [ 1 2 3 4 5 6 7 8 9])
 (def s [3 4 5])
 (diff-with-f x s #(= %1 %2)) ----> (1 2 6 7 8 9)
@@ -23,26 +20,26 @@ For equality, also this can be used with the above data;
  [col-1 col-2 cond-f]
  (loop [c1 col-1 c2 col-2]
    (if-let [word (first c2)]
-     (recur 
+     (recur
       (remove #(cond-f % word) c1)
       (rest c2))
      c1)))
 
-(defn replace-template [text m] 
-      (clojure.string/replace text #"\{\w+\}" 
+(defn replace-template [text m]
+      (clojure.string/replace text #"\{\w+\}"
                               (comp m keyword clojure.string/join butlast rest)))
 
 
 (defn merge-map-collections-on-key
   "Merges detail info from second map onto first using the key as the idenfier."
   [master detail k]
-  
+
   (for [{word :word} master]
     (let [[ p1] (filter #(= (k %) word) master)
           [ p2] (filter #(= (k %) word) detail)]
       (merge p1 p2)
       ))
-  
+
   )
 
 (defn get-name-wtho-ext [file]
@@ -87,7 +84,7 @@ For equality, also this can be used with the above data;
   files, removes directory entries, and returns a map for file, then
   assigns :card-id s incrementally."
   [& directories]
-  (let [all-cards  
+  (let [all-cards
         (flatten  (for [directory directories]
                     (let [allInDir (.listFiles (io/file (str "resources/public/"  directory )))
                           onlyFiles (remove #(.isDirectory %) allInDir)
@@ -114,12 +111,11 @@ For equality, also this can be used with the above data;
 
 (defn remove-cards-with-id [cards & ids]
   (let [id-list (convert-to-collection ids)]
-    (print ids)
     (reduce #(remove (fn [x] (= (:card-id x) %2)) %1) cards id-list)))
 
-;"animals" "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen" "verbs" "prepositions"    
+;"animals" "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen" "verbs" "prepositions"
 (defn get-cards
-  ([] (load-cards "animals" "nature"  "clothes"  "house" "kitchen" "verbs" "prepositions"))  
+  ([] (load-cards "animals" "nature"  "clothes"  "house" "kitchen" "verbs" "prepositions"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
@@ -251,19 +247,8 @@ returns a map."
 
 
 
-(client/post "https://stream.twitter.com/1.1/statuses/filter.json"
-             {:client-params {
-                              "track" "twitter"
-                              "Authorization" "OAuth"
-                              "oauth_consumer_key" "UdTQk86fVvOK1PECeD1ZubkJ9"
-                              "oauth_nonce=" "286295c4c09f35a9334e7dd4e215057e"
-                              "oauth_signature=" "Y%2BOxAQw8uDQrfWTPDIwsIbypob8%3D"
-                              "oauth_signature_method=" "HMAC-SHA1"
-                              "oauth_timestamp=" "1423260084"
-                              "oauth_token=" "158678545-cvKJS6Q4UQxmJfBQc6X1wnFaNCyDUjDGiEOmBTXb"
-                              "oauth_version=" "1.0"
-                              "http.protocol.allow-circular-redirects" false
-                              "http.useragent" "clj-http"}})
+
+
 ;; ;;////////////////////////////////////
 ;; ;(selection-questions-map)
 
@@ -284,19 +269,3 @@ returns a map."
 
 
 ;(map get-mp3-url (map stri/lower-case (map :word (take 3 (get-cards)))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
