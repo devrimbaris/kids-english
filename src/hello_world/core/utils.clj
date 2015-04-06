@@ -115,7 +115,7 @@ For equality, also this can be used with the above data;
 
 ;"animals" "body-parts" "colours" "family" "geometry" "nature" "opposites" "school" "weather" "clothes" "health"  "house" "kitchen" "verbs" "prepositions"
 (defn get-cards
-  ([] (load-cards "animals" "nature"  "clothes"  "house" "kitchen" "verbs" "prepositions"))
+  ([] (load-cards "esen1" "esen2"  "esen3"))
   ([exclude-list] (remove-cards-with-id exclude-list (get-cards))))
 
 ;;TODO option kisimlari tum card listesinden gelmeli
