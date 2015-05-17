@@ -4,3 +4,6 @@
 (defonce server (jty/run-jetty #'hello-world.core.handler/app {:port 8080 :join? false}))
 (.start server)
 
+
+resize pictures to 320x proportional
+mogrify -resize 320x deneme.jpg
