@@ -1,5 +1,13 @@
 # hello-world
 
+## HOWTO RUN (emacs repl)
+(require '[clojure.tools.namespace.repl :refer [refresh refresh-all]])
+(require '[ring.adapter.jetty :as jty])
+(refresh-all)
+(defonce server (jty/run-jetty #'hello-world.core.handler/app {:port 8080 :join? false}))
+(.start server)
+
+
 
 ## DBA
 Once lein ring server-headless ile sunucuyu calistir
