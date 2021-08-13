@@ -1,4 +1,4 @@
-# hello-world
+# English Learning Game
 
 ## HOWTO RUN (emacs repl)
 (require '[clojure.tools.namespace.repl :refer [refresh refresh-all]])
