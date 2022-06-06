@@ -10,9 +10,8 @@
 
 
 ## DBA
-Once lein ring server-headless ile sunucuyu calistir
-eww ile sayfalari gorebilirsin
-cider-connect cek
+1. Use "lein ring server-headless"  for running server
+2. Use cider-connect
 
 
 ## Prerequisites
